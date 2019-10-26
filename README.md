@@ -1,4 +1,5 @@
 # ChittyChat
+Open the chitty-chat website and chat to each other with an emoji analysis!
 
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 8.0.4.
 
