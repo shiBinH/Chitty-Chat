@@ -38,14 +38,7 @@ jobs:
             # the current branch
             - run:
                 name: Building
-                command: |
-                    if [ "${CIRCLE_BRANCH}" == "staging" ]; then
-                        npm run build-qa
-                    elif [ "${CIRCLE_BRANCH}" == "master" ]; then
-                        npm run build-prod
-                    else
-                        npm run build-dev
-                    fi
+                command: npm run build
             # Cache the dist folder for the deploy job
             - save_cache:
                 key: v1-dist-{{ .Environment.CIRCLE_BRANCH }}-{{ .Environment.CIRCLE_SHA1 }}

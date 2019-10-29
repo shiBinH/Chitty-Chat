@@ -7,39 +7,7 @@ import { ChatboxComponent } from './chatbox/chatbox.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { FormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
-import {
-  MatAutocompleteModule,
-  MatButtonModule,
-  MatButtonToggleModule,
-  MatCardModule,
-  MatCheckboxModule,
-  MatChipsModule,
-  MatDatepickerModule,
-  MatDialogModule,
-  MatExpansionModule,
-  MatGridListModule,
-  MatIconModule,
-  MatInputModule,
-  MatListModule,
-  MatMenuModule,
-  MatNativeDateModule,
-  MatPaginatorModule,
-  MatProgressBarModule,
-  MatProgressSpinnerModule,
-  MatRadioModule,
-  MatRippleModule,
-  MatSelectModule,
-  MatSidenavModule,
-  MatSliderModule,
-  MatSlideToggleModule,
-  MatSnackBarModule,
-  MatSortModule,
-  MatTableModule,
-  MatTabsModule,
-  MatToolbarModule,
-  MatTooltipModule,
-  MatStepperModule
-} from '@angular/material';
+import { MaterialModule } from './modules/material-module';
 @NgModule({
   declarations: [
     AppComponent,
@@ -54,17 +22,7 @@ import {
     BrowserAnimationsModule,
     FormsModule,
     HttpClientModule,
-    MatTabsModule,
-    MatCardModule,
-    MatGridListModule,
-    MatButtonModule,
-    MatInputModule,
-    MatListModule,
-    MatIconModule,
-    MatSidenavModule,
-    MatProgressSpinnerModule,
-    MatTooltipModule,
-    MatDialogModule
+    MaterialModule,
   ],
   providers: [],
   bootstrap: [AppComponent]
