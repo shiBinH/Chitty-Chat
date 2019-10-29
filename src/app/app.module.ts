@@ -7,6 +7,7 @@ import { ChatboxComponent } from './chatbox/chatbox.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { FormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
+import { ChatService } from '../chat.service';
 import {
   MatAutocompleteModule,
   MatButtonModule,
@@ -66,7 +67,7 @@ import {
     MatTooltipModule,
     MatDialogModule
   ],
-  providers: [],
+  providers: [ChatService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

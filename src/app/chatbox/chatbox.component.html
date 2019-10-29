@@ -58,7 +58,7 @@
           <p *ngIf="event.type == 'member:joined'" class="text-center">
             <b>{{selectedConversation.members[event.from].user.name}}</b> has joined the conversation</p>
         </mat-list-item> -->
-      <mat-list-item>dialogue</mat-list-item>
+      <mat-list-item *ngFor="let message of messages">{{message}}</mat-list-item>
     </mat-list>
 
     <div class="conversation-input">
@@ -68,10 +68,10 @@
           class="input__field"
           matInput
           placeholder="Start chatting..."
-          name="text"
-          [(ngModel)]="text"
+          name="message"
+          [(ngModel)]="message"
         />
-        <mat-icon matSuffix (click)="sendText(text)">send</mat-icon>
+        <mat-icon matSuffix (click)="sendMessage(message)" (keyup)="$event.keyCode == 13 && sendMessage()">send</mat-icon>
         <!-- <input matInput placeholder="Start chatting..." name="text" >
           <mat-icon matSuffix >send</mat-icon> -->
       </mat-form-field>
