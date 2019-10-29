@@ -13,7 +13,7 @@ describe('ChatboxComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [ 
+      imports: [
         MaterialModule,
         BrowserModule,
         BrowserAnimationsModule,
