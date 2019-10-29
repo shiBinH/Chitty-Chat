@@ -1,13 +1,20 @@
 let express = require('express')
-let app = express();
-
+let path = require('path');
 let http = require('http');
-let server = http.Server(app);
-
 let socketIO = require('socket.io');
+
+let app = express();
+let server = http.Server(app);
 let io = socketIO(server);
 
 const port = process.env.PORT || 3000;
+app.use(express.static(path.join(__dirname, '../../dist/chitty-chat/')))
+
+app.get('*', (req, res) => {
+  res
+    .status(200)
+    .sendFile(path.join(__dirname, '../../dist/chitty-chat/index.html'));
+})
 
 io.on('connection', (socket) => {
     console.log('user connected');
