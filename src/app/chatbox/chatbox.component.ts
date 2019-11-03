@@ -17,7 +17,7 @@ export class ChatboxComponent implements OnInit {
   message = '';
   messages: string[] = [];
   secretCode = 'secret';
-  selectedConversation = {
+  selectedConversation = { // this is designed this way because we might have multiple memeber in a conversation
     members: [
       {
         value: {
@@ -33,7 +33,29 @@ export class ChatboxComponent implements OnInit {
       id: 1,
       display_name: 'Luke',
       message: ['message1']
+    },
+    {
+      id: 2,
+      display_name: 'John',
+      message: ['message1']
+    },
+    {
+      id: 3,
+      display_name: 'Alex',
+      message: ['message1']
     }
+  ];
+
+  friendList = [
+    {
+      name: 'Luke'
+    },
+    {
+      name: 'John'
+    },
+    {
+      name: 'Alex'
+    },
   ];
   constructor(private chatService: ChatService) {}
 
@@ -46,7 +68,10 @@ export class ChatboxComponent implements OnInit {
     console.log(this.messages);
   }
 
-  selectConversation(id) {}
+  selectConversation(id: number) {
+    const result = this.conversations.filter((conversation) => conversation.id === id);
+    this.selectedConversation.members[0].value.user.name = result[0].display_name;
+  }
   sendText(text) { console.log(this.text); }
 
   sendMessage() {
