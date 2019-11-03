@@ -21,8 +21,8 @@
   </mat-sidenav>
   <mat-sidenav position="end" mode="side" opened *ngIf="selectedConversation">
     <mat-card>
-      <mat-list class="members">
-        <mat-list-item *ngFor="let friend of friendList">
+      <mat-list class="conversations" >
+        <mat-list-item *ngFor="let friend of friendList; let i = index" (click)="openConversation(i)">
           <p>{{ friend.name }}</p>
         </mat-list-item>
       </mat-list>

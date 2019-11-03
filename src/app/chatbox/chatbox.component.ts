@@ -72,6 +72,10 @@ export class ChatboxComponent implements OnInit {
     const result = this.conversations.filter((conversation) => conversation.id === id);
     this.selectedConversation.members[0].value.user.name = result[0].display_name;
   }
+
+  openConversation(index: number) {
+    this.selectedConversation.members[0].value.user.name = this.friendList[index].name;
+  }
   sendText(text) { console.log(this.text); }
 
   sendMessage() {
