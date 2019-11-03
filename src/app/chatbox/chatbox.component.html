@@ -13,6 +13,7 @@
             >
               <mat-icon matListIcon>forum</mat-icon>
               <p>{{ conversation.display_name }}</p>
+              <mat-icon [ngStyle]="{'float': 'right'}" (click)="deleteConversation(conversation.id)">delete</mat-icon>
             </mat-list-item>
           </mat-list>
         </mat-tab>

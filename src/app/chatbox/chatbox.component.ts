@@ -76,6 +76,12 @@ export class ChatboxComponent implements OnInit {
   openConversation(index: number) {
     this.selectedConversation.members[0].value.user.name = this.friendList[index].name;
   }
+
+  deleteConversation(id: number) {
+    let deleteIndex = this.conversations.findIndex(item => item.id === id);
+    this.conversations.splice(deleteIndex, 1);
+
+  }
   sendText(text) { console.log(this.text); }
 
   sendMessage() {
