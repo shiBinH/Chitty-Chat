@@ -6,6 +6,8 @@ import { ChatService } from '../../chat.service';
 // import 'rxjs/add/operator/map';
 import * as moment from 'moment';
 import { filter, distinctUntilChanged, skipWhile, scan, throttleTime } from 'rxjs/operators';
+import randomString from 'randomstring';
+
 
 @Component({
   selector: 'app-chatbox',
@@ -29,31 +31,34 @@ export class ChatboxComponent implements OnInit {
     ]
   };
   conversations = [
-    {
-      id: 1,
-      display_name: 'Luke',
-      message: ['message1']
-    },
-    {
-      id: 2,
-      display_name: 'John',
-      message: ['message1']
-    },
-    {
-      id: 3,
-      display_name: 'Alex',
-      message: ['message1']
-    }
+  //   {
+  //     id: '1',
+  //     display_name: 'Luke',
+  //     message: ['message1']
+  //   },
+  //   {
+  //     id: '2',
+  //     display_name: 'John',
+  //     message: ['message1']
+  //   },
+  //   {
+  //     id: '3',
+  //     display_name: 'Alex',
+  //     message: ['message1']
+  //   }
   ];
 
   friendList = [
     {
+      id: Math.random().toString(36).substring(7),
       name: 'Luke'
     },
     {
+      id: Math.random().toString(36).substring(7),
       name: 'John'
     },
     {
+      id: Math.random().toString(36).substring(7),
       name: 'Alex'
     },
   ];
@@ -68,16 +73,27 @@ export class ChatboxComponent implements OnInit {
     console.log(this.messages);
   }
 
-  selectConversation(id: number) {
+  selectConversation(id: string) {
     const result = this.conversations.filter((conversation) => conversation.id === id);
     this.selectedConversation.members[0].value.user.name = result[0].display_name;
   }
 
   openConversation(index: number) {
     this.selectedConversation.members[0].value.user.name = this.friendList[index].name;
+    let friendIndex = this.conversations.findIndex(item => item.id === this.friendList[index].id);
+    if (friendIndex !== -1) {
+      return;
+    } else {
+    let conversation = {
+        id: this.friendList[index].id,
+        display_name: this.friendList[index].name,
+        message: ['message1']
+    };
+    this.conversations.push(conversation);
+  }
   }
 
-  deleteConversation(id: number) {
+  deleteConversation(id: string) {
     let deleteIndex = this.conversations.findIndex(item => item.id === id);
     this.conversations.splice(deleteIndex, 1);
 
