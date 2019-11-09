@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ChatService } from '../chat.service';
-
+import { AngularFirestore } from '@angular/fire/firestore';
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
@@ -10,7 +10,7 @@ export class AppComponent implements OnInit {
   title = 'chitty-chat';
   message = '';
   messages: string[] = [];
-  constructor(private chatService: ChatService) {}
+  constructor(private chatService: ChatService, db: AngularFirestore) {}
 
   ngOnInit() {
     this.chatService
@@ -24,5 +24,13 @@ export class AppComponent implements OnInit {
   sendMessage() {
     this.chatService.sendMessage(this.message);
     this.message = '';
+  }
+
+  printUser(event) {
+    console.log(event);
+  }
+
+  printError(event) {
+      console.error(event);
   }
 }

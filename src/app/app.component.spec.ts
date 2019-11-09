@@ -26,7 +26,7 @@ describe('AppComponent', () => {
         FormsModule,
         HttpClientModule,
         NgxAuthFirebaseUIModule.forRoot(environment.firebase),
-        AngularFireModule.initializeApp(environment.firebase, 'chitty-chat')
+        AngularFireModule.initializeApp(environment.firebase, 'chitty-chat'),
       ],
       declarations: [
         AppComponent,

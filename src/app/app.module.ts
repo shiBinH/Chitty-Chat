@@ -12,6 +12,9 @@ import { MaterialModule } from './modules/material-module';
 import { NgxAuthFirebaseUIModule } from 'ngx-auth-firebaseui';
 import { AngularFireModule } from '@angular/fire';
 import { environment } from '../environments/environment';
+import { AngularFirestoreModule } from '@angular/fire/firestore';
+import { AngularFireStorageModule } from '@angular/fire/storage';
+import { AngularFireAuthModule } from '@angular/fire/auth';
 @NgModule({
   declarations: [
     AppComponent,
@@ -27,8 +30,11 @@ import { environment } from '../environments/environment';
     FormsModule,
     HttpClientModule,
     MaterialModule,
-    NgxAuthFirebaseUIModule.forRoot(environment.firebase),
-    AngularFireModule.initializeApp(environment.firebase, 'chitty-chat')
+    NgxAuthFirebaseUIModule.forRoot(environment.firebase, () => 'chitty-chat'),
+    AngularFireModule.initializeApp(environment.firebase, 'chitty-chat'),
+    AngularFireAuthModule,
+    AngularFirestoreModule,
+    AngularFireStorageModule,
   ],
   exports: [
   ],
