@@ -80,11 +80,11 @@ export class ChatboxComponent implements OnInit {
 
   openConversation(index: number) {
     this.selectedConversation.members[0].value.user.name = this.friendList[index].name;
-    let friendIndex = this.conversations.findIndex(item => item.id === this.friendList[index].id);
+    const friendIndex = this.conversations.findIndex(item => item.id === this.friendList[index].id);
     if (friendIndex !== -1) {
       return;
     } else {
-    let conversation = {
+    const conversation = {
         id: this.friendList[index].id,
         display_name: this.friendList[index].name,
         message: ['message1']
@@ -94,7 +94,7 @@ export class ChatboxComponent implements OnInit {
   }
 
   deleteConversation(id: string) {
-    let deleteIndex = this.conversations.findIndex(item => item.id === id);
+    const deleteIndex = this.conversations.findIndex(item => item.id === id);
     this.conversations.splice(deleteIndex, 1);
 
   }
