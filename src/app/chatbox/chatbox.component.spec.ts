@@ -1,9 +1,9 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-
-import { ChatboxComponent } from './chatbox.component';
 import { MaterialModule } from '../modules/material-module';
-import { BrowserModule } from '@angular/platform-browser';
+import { ChatboxComponent } from './chatbox.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { ChatService } from '../../chat.service';
+import { BrowserModule } from '@angular/platform-browser';
 import { FormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 
@@ -15,13 +15,16 @@ describe('ChatboxComponent', () => {
     TestBed.configureTestingModule({
       imports: [
         MaterialModule,
+        BrowserAnimationsModule,
+        MaterialModule,
         BrowserModule,
         BrowserAnimationsModule,
         FormsModule,
-        HttpClientModule, ],
-      declarations: [ ChatboxComponent ]
-    })
-    .compileComponents();
+        HttpClientModule
+      ],
+      declarations: [ChatboxComponent],
+      providers: [ChatService]
+    }).compileComponents();
   }));
 
   beforeEach(() => {

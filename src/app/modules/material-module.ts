@@ -105,4 +105,4 @@ import { FormsModule , ReactiveFormsModule } from '@angular/forms';
         MatStepperModule
     ],
 })
-export class MaterialModule {}
+export class MaterialModule { }

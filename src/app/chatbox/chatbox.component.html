@@ -13,11 +13,8 @@
             >
               <mat-icon matListIcon>forum</mat-icon>
               <p>{{ conversation.display_name }}</p>
+              <mat-icon [ngStyle]="{'float': 'right'}" (click)="deleteConversation(conversation.id)">delete</mat-icon>
             </mat-list-item>
-            <!-- <mat-list-item  >
-                <mat-icon matListIcon>forum</mat-icon>
-                <p>conversation</p>
-              </mat-list-item> -->
           </mat-list>
         </mat-tab>
       </mat-tab-group>
@@ -25,11 +22,10 @@
   </mat-sidenav>
   <mat-sidenav position="end" mode="side" opened *ngIf="selectedConversation">
     <mat-card>
-      <mat-list class="members">
-        <mat-list-item *ngFor="let member of selectedConversation.members">
-          <p>{{ member.value.user.name }}</p>
+      <mat-list class="conversations" >
+        <mat-list-item *ngFor="let friend of friendList; let i = index" (click)="openConversation(i)">
+          <p>{{ friend.name }}</p>
         </mat-list-item>
-        <!-- <mat-list-item>member</mat-list-item> -->
       </mat-list>
     </mat-card>
   </mat-sidenav>
@@ -58,7 +54,7 @@
           <p *ngIf="event.type == 'member:joined'" class="text-center">
             <b>{{selectedConversation.members[event.from].user.name}}</b> has joined the conversation</p>
         </mat-list-item> -->
-      <mat-list-item>dialogue</mat-list-item>
+      <mat-list-item *ngFor="let message of messages">{{message}}</mat-list-item>
     </mat-list>
 
     <div class="conversation-input">
@@ -68,10 +64,10 @@
           class="input__field"
           matInput
           placeholder="Start chatting..."
-          name="text"
-          [(ngModel)]="text"
+          name="message"
+          [(ngModel)]="message"
         />
-        <mat-icon matSuffix (click)="sendText(text)">send</mat-icon>
+        <mat-icon matSuffix (click)="sendMessage(message)" (keyup)="$event.keyCode == 13 && sendMessage()">send</mat-icon>
         <!-- <input matInput placeholder="Start chatting..." name="text" >
           <mat-icon matSuffix >send</mat-icon> -->
       </mat-form-field>
