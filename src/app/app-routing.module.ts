@@ -1,11 +1,13 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { LoggedInGuard } from 'ngx-auth-firebaseui';
+import { ChatboxComponent } from './chatbox/chatbox.component';
+
 const routes: Routes = [
   { path: '', redirectTo: 'chatbox', pathMatch: 'full' },
   {
     path: 'chatbox',
-    loadChildren: 'app/chatbox/chatbox.module#ChatboxModule',
+    component: ChatboxComponent,
     canActivate: [LoggedInGuard]
   }
 ];
