@@ -6,7 +6,6 @@ import { ChatService } from '../../chat.service';
 // import 'rxjs/add/operator/map';
 import * as moment from 'moment';
 import { filter, distinctUntilChanged, skipWhile, scan, throttleTime } from 'rxjs/operators';
-import randomString from 'randomstring';
 
 
 @Component({
