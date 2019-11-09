@@ -65,7 +65,10 @@ import {
     MatSidenavModule,
     MatProgressSpinnerModule,
     MatTooltipModule,
-    MatDialogModule
+    MatDialogModule,
+  ],
+  exports: [
+    MatIconModule
   ],
   providers: [ChatService],
   bootstrap: [AppComponent]
