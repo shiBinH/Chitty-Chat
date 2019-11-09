@@ -5,7 +5,7 @@ const routes: Routes = [
   { path: '', redirectTo: 'chatbox', pathMatch: 'full' },
   {
     path: 'secured',
-    loadChildren: 'app/secured/secured.module#SecuredModule',
+    // loadChildren: 'app/secured/secured.module#SecuredModule',
     canActivate: [LoggedInGuard]
   }
 ];
