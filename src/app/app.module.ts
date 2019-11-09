@@ -9,6 +9,7 @@ import { FormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import { ChatService } from '../chat.service';
 import { MaterialModule } from './modules/material-module';
+import { NgxAuthFirebaseUIModule } from 'ngx-auth-firebaseui';
 @NgModule({
   declarations: [
     AppComponent,
@@ -24,6 +25,7 @@ import { MaterialModule } from './modules/material-module';
     FormsModule,
     HttpClientModule,
     MaterialModule,
+    NgxAuthFirebaseUIModule.forRoot(PUT_YOUR_FIREBASE_API_KEY_HERE),
   ],
   exports: [
   ],
