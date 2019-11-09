@@ -4,6 +4,11 @@ import { AppComponent } from './app.component';
 import { MaterialModule } from './modules/material-module';
 import { ChatboxComponent } from './chatbox/chatbox.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { BrowserModule } from '@angular/platform-browser';
+import { AppRoutingModule } from './app-routing.module';
+import { FormsModule } from '@angular/forms';
+import { HttpClientModule } from '@angular/common/http';
+
 
 describe('AppComponent', () => {
   beforeEach(async(() => {
@@ -11,11 +16,16 @@ describe('AppComponent', () => {
       imports: [
         RouterTestingModule,
         MaterialModule,
-        BrowserAnimationsModule
+        BrowserAnimationsModule,
+        BrowserModule,
+        AppRoutingModule,
+        BrowserAnimationsModule,
+        FormsModule,
+        HttpClientModule,
       ],
       declarations: [
         AppComponent,
-        ChatboxComponent
+        ChatboxComponent,
       ],
     }).compileComponents();
   }));

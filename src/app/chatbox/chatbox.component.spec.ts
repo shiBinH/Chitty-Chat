@@ -1,22 +1,30 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { MaterialModule } from '../modules/material-module';
-import { ChatboxComponent } from './chatbox.component';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { ChatService } from '../../chat.service';
+import { async, ComponentFixture, TestBed } from "@angular/core/testing";
+import { MaterialModule } from "../modules/material-module";
+import { ChatboxComponent } from "./chatbox.component";
+import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
+import { ChatService } from "../../chat.service";
+import { BrowserModule } from "@angular/platform-browser";
+import { FormsModule } from "@angular/forms";
+import { HttpClientModule } from "@angular/common/http";
 
-describe('ChatboxComponent', () => {
+describe("ChatboxComponent", () => {
   let component: ChatboxComponent;
   let fixture: ComponentFixture<ChatboxComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [MaterialModule,
-        BrowserAnimationsModule],
-      declarations: [ ChatboxComponent,
-         ],
-        providers: [ ChatService ],
-    })
-    .compileComponents();
+      imports: [
+        MaterialModule,
+        BrowserAnimationsModule,
+        MaterialModule,
+        BrowserModule,
+        BrowserAnimationsModule,
+        FormsModule,
+        HttpClientModule
+      ],
+      declarations: [ChatboxComponent],
+      providers: [ChatService]
+    }).compileComponents();
   }));
 
   beforeEach(() => {
@@ -25,7 +33,7 @@ describe('ChatboxComponent', () => {
     fixture.detectChanges();
   });
 
-  it('should create', () => {
+  it("should create", () => {
     expect(component).toBeTruthy();
   });
 });
