@@ -11,7 +11,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { AngularFireModule } from '@angular/fire';
 import { environment } from '../environments/environment';
 import { NgxAuthFirebaseUIModule } from 'ngx-auth-firebaseui';
-
+import { RouterModule, Routes } from '@angular/router';
 
 describe('AppComponent', () => {
   beforeEach(async(() => {
@@ -27,6 +27,7 @@ describe('AppComponent', () => {
         HttpClientModule,
         NgxAuthFirebaseUIModule.forRoot(environment.firebase),
         AngularFireModule.initializeApp(environment.firebase, 'chitty-chat'),
+        RouterModule
       ],
       declarations: [
         AppComponent,
