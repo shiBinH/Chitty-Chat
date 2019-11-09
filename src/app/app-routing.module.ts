@@ -4,8 +4,8 @@ import { LoggedInGuard } from 'ngx-auth-firebaseui';
 const routes: Routes = [
   { path: '', redirectTo: 'chatbox', pathMatch: 'full' },
   {
-    path: 'secured',
-    // loadChildren: 'app/secured/secured.module#SecuredModule',
+    path: 'chatbox',
+    loadChildren: 'app/chatbox/chatbox.module#ChatboxModule',
     canActivate: [LoggedInGuard]
   }
 ];
