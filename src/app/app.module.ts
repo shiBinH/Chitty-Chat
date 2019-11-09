@@ -10,6 +10,8 @@ import { HttpClientModule } from '@angular/common/http';
 import { ChatService } from '../chat.service';
 import { MaterialModule } from './modules/material-module';
 import { NgxAuthFirebaseUIModule } from 'ngx-auth-firebaseui';
+import { AngularFireModule } from '@angular/fire';
+import { environment } from '../environments/environment';
 @NgModule({
   declarations: [
     AppComponent,
@@ -25,7 +27,8 @@ import { NgxAuthFirebaseUIModule } from 'ngx-auth-firebaseui';
     FormsModule,
     HttpClientModule,
     MaterialModule,
-    NgxAuthFirebaseUIModule.forRoot(PUT_YOUR_FIREBASE_API_KEY_HERE),
+    NgxAuthFirebaseUIModule.forRoot(environment.firebase),
+    AngularFireModule.initializeApp(environment.firebase, 'chitty-chat')
   ],
   exports: [
   ],
