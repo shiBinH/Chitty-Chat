@@ -4,7 +4,7 @@ import { LoggedInGuard } from 'ngx-auth-firebaseui';
 import { ChatboxComponent } from './chatbox/chatbox.component';
 
 const routes: Routes = [
-  { path: '', redirectTo: 'chatbox', pathMatch: 'full' },
+  { path: '', redirectTo: '/', pathMatch: 'full' },
   {
     path: 'chatbox',
     component: ChatboxComponent,
