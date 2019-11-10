@@ -29,7 +29,7 @@ export class AppComponent implements OnInit {
 
   printUser(event) {
     console.log(event);
-    this.router.navigate(['/chatbox']);
+    this.router.navigate(['chatbox']);
   }
 
   printError(event) {

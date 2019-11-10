@@ -9,6 +9,11 @@ const routes: Routes = [
     path: 'chatbox',
     component: ChatboxComponent,
     canActivate: [LoggedInGuard]
+  },
+  {
+    path: '**',
+    component: ChatboxComponent,
+    canActivate: [LoggedInGuard]
   }
 ];
 
