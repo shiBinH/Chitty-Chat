@@ -1,12 +1,12 @@
 import { TestBed } from '@angular/core/testing';
-import { Observable } from 'rxjs';
-import { ChatService } from './chat.service';
 
-describe('ChatService', () => {
+import { AuthService } from '../../app/services/auth.service';
+
+describe('AuthService', () => {
   beforeEach(() => TestBed.configureTestingModule({}));
 
   it('should be created', () => {
-    const service: ChatService = TestBed.get(ChatService);
+    const service: AuthService = TestBed.get(AuthService);
     expect(service).toBeTruthy();
   });
 });
