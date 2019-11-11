@@ -1,5 +1,4 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { Router } from '@angular/router';
 import { ChatService } from '../services/chat.service';
 // import { Observable } from 'rxjs/Observable';
 // import 'rxjs/add/observable/from';

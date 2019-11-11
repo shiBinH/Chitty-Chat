@@ -8,6 +8,10 @@ import { BrowserModule } from '@angular/platform-browser';
 import { AppRoutingModule } from './app-routing.module';
 import { FormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
+import { AngularFireAuth } from '@angular/fire/auth';
+import { AngularFirestore } from '@angular/fire/firestore';
+import { environment } from 'src/environments/environment';
+import { AngularFireModule } from '@angular/fire';
 
 
 describe('AppComponent', () => {
@@ -22,11 +26,13 @@ describe('AppComponent', () => {
         BrowserAnimationsModule,
         FormsModule,
         HttpClientModule,
+        AngularFireModule.initializeApp(environment.firebase),
       ],
       declarations: [
         AppComponent,
         ChatboxComponent,
       ],
+      providers: [AngularFireAuth, AngularFirestore]
     }).compileComponents();
   }));
 
