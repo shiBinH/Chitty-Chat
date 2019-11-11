@@ -13,6 +13,7 @@ import { MaterialModule } from './modules/material-module';
 import { AngularFireModule } from '@angular/fire';
 import { AngularFirestoreModule } from '@angular/fire/firestore';
 import { AngularFireAuthModule } from '@angular/fire/auth';
+import { LoginComponent } from './login/login.component';
 
 const config = {
   apiKey: 'AIzaSyD-9drCjUDfcRit3vaqTkY_8PVZCOsfiiA',
@@ -26,7 +27,8 @@ const config = {
 @NgModule({
   declarations: [
     AppComponent,
-    ChatboxComponent
+    ChatboxComponent,
+    LoginComponent
   ],
   imports: [
     BrowserModule,
