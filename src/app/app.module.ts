@@ -7,19 +7,31 @@ import { ChatboxComponent } from './chatbox/chatbox.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { FormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
-import { ChatService } from '../chat.service';
+import { ChatService } from './services/chat.service';
 import { MaterialModule } from './modules/material-module';
-import { NgxAuthFirebaseUIModule } from 'ngx-auth-firebaseui';
-import { AngularFireModule } from '@angular/fire';
-import { environment } from '../environments/environment';
-import { AngularFirestoreModule } from '@angular/fire/firestore';
-import { AngularFireStorageModule } from '@angular/fire/storage';
-import { AngularFireAuthModule } from '@angular/fire/auth';
-import { RouterModule, Routes } from '@angular/router';
 
-const appRoutes: Routes = [{ path: 'chatbox', component: ChatboxComponent }];
+import { AngularFireModule } from '@angular/fire';
+import { AngularFirestoreModule } from '@angular/fire/firestore';
+import { AngularFireAuthModule } from '@angular/fire/auth';
+import { LoginComponent } from './login/login.component';
+
+import { environment } from '../environments/environment';
+
+const config = {
+  apiKey: 'AIzaSyD-9drCjUDfcRit3vaqTkY_8PVZCOsfiiA',
+  authDomain: 'chitty-chat-ba34b.firebaseapp.com',
+  databaseURL: 'https://chitty-chat-ba34b.firebaseio.com',
+  projectId: 'chitty-chat-ba34b',
+  storageBucket: 'chitty-chat-ba34b.appspot.com',
+  messagingSenderId: '1092864489290',
+  appId: '1:1092864489290:web:1aaf648231980c30e3f3b3'
+};
 @NgModule({
-  declarations: [AppComponent, ChatboxComponent],
+  declarations: [
+    AppComponent,
+    ChatboxComponent,
+    LoginComponent
+  ],
   imports: [
     BrowserModule,
     AppRoutingModule,
@@ -30,18 +42,13 @@ const appRoutes: Routes = [{ path: 'chatbox', component: ChatboxComponent }];
     FormsModule,
     HttpClientModule,
     MaterialModule,
-    NgxAuthFirebaseUIModule.forRoot(environment.firebase, () => 'chitty-chat', {
-      authGuardFallbackURL: '/',
-      authGuardLoggedInURL: '/chatbox'
-    }),
-    AngularFireModule.initializeApp(environment.firebase, 'chitty-chat'),
-    AngularFireAuthModule,
+    AngularFireModule.initializeApp(environment.firebase),
     AngularFirestoreModule,
-    AngularFireStorageModule,
-    RouterModule.forRoot(appRoutes, { enableTracing: true })
+    AngularFireAuthModule,
   ],
-  exports: [],
+  exports: [
+  ],
   providers: [ChatService],
   bootstrap: [AppComponent]
 })
-export class AppModule {}
+export class AppModule { }

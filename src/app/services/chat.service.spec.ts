@@ -1,6 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 import { Observable } from 'rxjs';
-import { ChatService } from './chat.service';
+import { ChatService } from '../../app/services/chat.service';
 
 describe('ChatService', () => {
   beforeEach(() => TestBed.configureTestingModule({}));

@@ -1,12 +1,12 @@
-import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
-import { ChatService } from '../../chat.service';
+import { Component, OnInit, Input } from '@angular/core';
+import { ChatService } from '../services/chat.service';
 // import { Observable } from 'rxjs/Observable';
 // import 'rxjs/add/observable/from';
 // import 'rxjs/add/operator/map';
 import * as moment from 'moment';
 import { filter, distinctUntilChanged, skipWhile, scan, throttleTime } from 'rxjs/operators';
-
+import { AuthService } from '../services/auth.service';
+// import randomString from 'randomstring';
 
 @Component({
   selector: 'app-chatbox',
@@ -61,7 +61,7 @@ export class ChatboxComponent implements OnInit {
       name: 'Alex'
     },
   ];
-  constructor(private chatService: ChatService) {}
+  constructor(private chatService: ChatService, public auth: AuthService) {}
 
   ngOnInit() {
     this.chatService

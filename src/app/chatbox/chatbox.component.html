@@ -26,6 +26,11 @@
         <mat-list-item *ngFor="let friend of friendList; let i = index" (click)="openConversation(i)">
           <p>{{ friend.name }}</p>
         </mat-list-item>
+        <mat-list-item>
+        <i class="material-icons" (click)="auth.signOut()">
+          power_settings_new
+          </i>
+        </mat-list-item>
       </mat-list>
     </mat-card>
   </mat-sidenav>

@@ -1,24 +1,14 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
-import { LoggedInGuard } from 'ngx-auth-firebaseui';
 import { ChatboxComponent } from './chatbox/chatbox.component';
+import { AuthGuard } from './auth.guard';
 
 const routes: Routes = [
-  { path: '', redirectTo: '/', pathMatch: 'full' },
-  {
-    path: 'chatbox',
-    component: ChatboxComponent,
-    canActivate: [LoggedInGuard]
-  },
-  {
-    path: '**',
-    component: ChatboxComponent,
-    canActivate: [LoggedInGuard]
-  }
+  {path: 'chatbox', component: ChatboxComponent, canActivate: [AuthGuard]}
 ];
 
 @NgModule({
   imports: [RouterModule.forRoot(routes)],
   exports: [RouterModule]
 })
-export class AppRoutingModule {}
+export class AppRoutingModule { }
