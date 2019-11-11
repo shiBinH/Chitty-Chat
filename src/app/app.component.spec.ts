@@ -8,10 +8,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { AppRoutingModule } from './app-routing.module';
 import { FormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
-import { AngularFireModule } from '@angular/fire';
-import { environment } from '../environments/environment';
-import { NgxAuthFirebaseUIModule } from 'ngx-auth-firebaseui';
-import { RouterModule, Routes } from '@angular/router';
+
 
 describe('AppComponent', () => {
   beforeEach(async(() => {
@@ -25,9 +22,6 @@ describe('AppComponent', () => {
         BrowserAnimationsModule,
         FormsModule,
         HttpClientModule,
-        NgxAuthFirebaseUIModule.forRoot(environment.firebase),
-        AngularFireModule.initializeApp(environment.firebase, 'chitty-chat'),
-        RouterModule
       ],
       declarations: [
         AppComponent,
