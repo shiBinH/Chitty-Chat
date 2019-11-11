@@ -19,5 +19,21 @@
     <h2><a target="_blank" rel="noopener" href="https://blog.angular.io/">Angular blog</a></h2>
   </li>
 </ul> -->
-<app-chatbox></app-chatbox>
+<!-- <app-chatbox></app-chatbox> -->
+
+<div *ngIf="auth.user$ | async as user; else login">
+  <pre>
+    <!-- {{ user | json }} -->
+    <app-chatbox></app-chatbox>
+  </pre>
+
+
+</div>
+
+<ng-template #login>
+    <div class="button__at">
+    <mat-card-header class="login__title">Welcome to Chitty Chat!</mat-card-header>
+  <button mat-raised-button color="warn" (click)="auth.googleSignin()">Login with Google</button>
+</div>
+</ng-template>
 <router-outlet></router-outlet>

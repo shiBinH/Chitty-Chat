@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ChatService } from './services/chat.service';
+import { AuthService } from './services/auth.service';
 
 @Component({
   selector: 'app-root',
@@ -10,7 +11,7 @@ export class AppComponent implements OnInit {
   title = 'chitty-chat';
   message = '';
   messages: string[] = [];
-  constructor(private chatService: ChatService) {}
+  constructor(private chatService: ChatService, public auth: AuthService) {}
 
   ngOnInit() {
     this.chatService
