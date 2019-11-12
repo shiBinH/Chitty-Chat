@@ -15,6 +15,7 @@ import { AngularFireAuth } from '@angular/fire/auth';
   styleUrls: ['./chatbox.component.scss']
 })
 export class ChatboxComponent implements OnInit {
+  @Input() userJson: any;
   text: string;
   message = '';
   messages: string[] = [];
@@ -22,60 +23,37 @@ export class ChatboxComponent implements OnInit {
   selectedConversation = { // this is designed this way because we might have multiple memeber in a conversation
     members: [
       {
-        value: {
-          user: {
-            name: 'John'
-          }
-        }
+        userID: 1,
+        name: 'Luke'
       },
       {
-        value: {
-          user: {
-            name: 'alex'
-          }
-        }
+        userID: 2,
+        name: 'Alex'
       },
       {
-        value: {
-          user: {
-            name: 'John'
-          }
-        }
+        userID: 3,
+        name: 'John'
       },
     ],
     me: {
       id: 1
-    }
+    },
+    conversationID: 10
   };
   conversations = [
-  //   {
-  //     id: '1',
-  //     display_name: 'Luke',
-  //     message: ['message1']
-  //   },
-  //   {
-  //     id: '2',
-  //     display_name: 'John',
-  //     message: ['message1']
-  //   },
-  //   {
-  //     id: '3',
-  //     display_name: 'Alex',
-  //     message: ['message1']
-  //   }
   ];
 
   friendList = [
     {
-      id: Math.random().toString(36).substring(7),
+      id: 1,
       name: 'Luke'
     },
     {
-      id: Math.random().toString(36).substring(7),
+      id: 2,
       name: 'John'
     },
     {
-      id: Math.random().toString(36).substring(7),
+      id: 3,
       name: 'Alex'
     },
   ];
@@ -84,16 +62,12 @@ export class ChatboxComponent implements OnInit {
     {
       from: 1,
       type: 'text',
-      body: {
-        text: 'mesgs'
-      }
+      text: 'mesages'
     },
     {
       from: 2,
       type: 'text',
-      body: {
-        text: 'mesgs'
-      }
+      text: 'messages'
     },
   ];
   constructor(private chatService: ChatService, public auth: AuthService, private afAuth: AngularFireAuth) {}
@@ -106,9 +80,7 @@ export class ChatboxComponent implements OnInit {
         this.events.push({
           from: 1,
           type: 'text',
-          body: {
-            text: message
-          }
+          text: message
         });
       });
     console.log(this.messages);
@@ -119,11 +91,11 @@ export class ChatboxComponent implements OnInit {
 
   selectConversation(id: string) {
     const result = this.conversations.filter((conversation) => conversation.id === id);
-    this.selectedConversation.members[0].value.user.name = result[0].display_name;
+    this.selectedConversation.members[0].name = result[0].display_name;
   }
 
   openConversation(index: number) {
-    this.selectedConversation.members[0].value.user.name = this.friendList[index].name;
+    this.selectedConversation.members[0].name = this.friendList[index].name;
     const friendIndex = this.conversations.findIndex(item => item.id === this.friendList[index].id);
     if (friendIndex !== -1) {
       return;
@@ -165,9 +137,7 @@ export class ChatboxComponent implements OnInit {
         this.events.push({
           from: 2,
           type: 'text',
-          body: {
-            text: messageWithTimestamp
-          }
+          text: messageWithTimestamp
         });
       });
   }

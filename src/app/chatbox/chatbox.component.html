@@ -50,7 +50,7 @@
     <div class="mat-typography conversation-header">
       <h2>
         <mat-icon>forum</mat-icon>
-        {{ selectedConversation.members[0].value.user.name }}
+        {{ selectedConversation.members[0].name }}
       </h2>
       <!-- <p>
           <mat-icon>account_circle</mat-icon>
@@ -66,12 +66,12 @@
         <img
           *ngIf="event.type == 'text'"
           matListAvatar
-          matTooltip="{{ selectedConversation.members[event.from].value.user.name }}"
+          matTooltip="{{ selectedConversation.members[event.from].name }}"
           src="https://randomuser.me/api/portraits/thumb/lego/{{ i }}.jpg"
         />
-        <p *ngIf="event.type == 'text'" [dir]="'ltr'">{{ event.body.text }}</p>
+        <p *ngIf="event.type == 'text'" [dir]="'ltr'">{{ event.text }}</p>
         <p *ngIf="event.type == 'member:joined'" class="text-center">
-          <b>{{ selectedConversation.members[event.from].value.user.name }}</b>
+          <b>{{ selectedConversation.members[event.from].name }}</b>
           has joined the conversation
         </p>
       </mat-list-item>
