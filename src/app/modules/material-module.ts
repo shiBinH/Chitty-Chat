@@ -48,7 +48,6 @@ import { FormsModule , ReactiveFormsModule } from '@angular/forms';
         MatDialogModule,
         MatExpansionModule,
         MatGridListModule,
-        MatIconModule,
         MatInputModule,
         MatListModule,
         MatMenuModule,
@@ -69,7 +68,8 @@ import { FormsModule , ReactiveFormsModule } from '@angular/forms';
         MatToolbarModule,
         MatTooltipModule,
         MatStepperModule,
-        MatMenuModule
+        MatMenuModule,
+        MatIconModule
     ],
     exports: [
         FormsModule,
