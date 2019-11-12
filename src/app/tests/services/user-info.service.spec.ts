@@ -1,6 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 import { AngularFirestore } from '@angular/fire/firestore';
-import { UserInfoService } from './user-info.service';
+import { UserInfoService } from '../../services/user-info.service';
 
 describe('UserInfoService', () => {
   beforeEach(() => TestBed.configureTestingModule({
