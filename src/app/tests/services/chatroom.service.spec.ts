@@ -1,6 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 import { AngularFirestore } from '@angular/fire/firestore';
-import { ChatroomService } from './chatroom.service';
+import { ChatroomService } from '../../services/chatroom.service';
 
 describe('ChatroomService', () => {
   beforeEach(() => TestBed.configureTestingModule({
