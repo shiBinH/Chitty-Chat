@@ -30,7 +30,8 @@ import {
     MatTabsModule,
     MatToolbarModule,
     MatTooltipModule,
-    MatStepperModule
+    MatStepperModule,
+
 } from '@angular/material';
 import { FormsModule , ReactiveFormsModule } from '@angular/forms';
 @NgModule({
@@ -67,7 +68,8 @@ import { FormsModule , ReactiveFormsModule } from '@angular/forms';
         MatTabsModule,
         MatToolbarModule,
         MatTooltipModule,
-        MatStepperModule
+        MatStepperModule,
+        MatMenuModule
     ],
     exports: [
         FormsModule,
@@ -102,7 +104,8 @@ import { FormsModule , ReactiveFormsModule } from '@angular/forms';
         MatTabsModule,
         MatToolbarModule,
         MatTooltipModule,
-        MatStepperModule
+        MatStepperModule,
+        MatMenuModule
     ],
 })
 export class MaterialModule { }
