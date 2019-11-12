@@ -27,6 +27,7 @@ const config = {
   messagingSenderId: '1092864489290',
   appId: '1:1092864489290:web:1aaf648231980c30e3f3b3'
 };
+
 @NgModule({
   declarations: [
     AppComponent,
