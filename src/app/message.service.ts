@@ -6,12 +6,13 @@ import { AngularFirestore } from '@angular/fire/firestore';
 })
 export class MessageService {
 
-  constructor(private db : AngularFirestore) { }
+  constructor(private db: AngularFirestore) { }
 
   public sendMessage(
-    userID: String, when: Date, chatRoomID: String, content: String, tone: String = "angry") : void {
+    userID: string, when: Date, chatRoomID: string,
+    content: string, tone: string = 'angry'): void {
     console.log(`Sending message for userID: ${userID}, when: ${when},
-                chatRoomID: ${chatRoomID}, content: ${content}, emotion: ${tone}`)
+                chatRoomID: ${chatRoomID}, content: ${content}, emotion: ${tone}`);
     this.db
       .collection(`chatrooms/${chatRoomID}/chats`)
       .doc(this.db.createId())
@@ -20,11 +21,11 @@ export class MessageService {
         emotion: tone,
         tone_id: tone,
         user: userID,
-        when: when
+        when
       })
       .then((data) => {
-        console.log('Message successfully sent!')
-      })
+        console.log('Message successfully sent!');
+      });
   }
 
 }

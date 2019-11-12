@@ -6,15 +6,14 @@ import { AngularFirestore } from '@angular/fire/firestore';
 //  test suite
 describe('MessageService', () => {
   //  initialize here
-  let serviceUnderTest : MessageService;
-  let mockFirestoreService : jasmine.SpyObj<AngularFirestore>;
-  let mockObject : jasmine.SpyObj<any>;
+  let serviceUnderTest: MessageService;
+  let mockObject: jasmine.SpyObj<any>;
   let firestoreServiceSpy: any;
-  const userID : String = "userID",
-        when : Date = new Date(), //  this should be probably be fixed
-        chatRoomID : String = "chatRoomID",
-        content : String = "Message content text",
-        tone : String = "angry";
+  const userID = 'userID';
+  const when: Date = new Date(); //  this should be probably be fixed
+  const chatRoomID = 'chatRoomID';
+  const content = 'Message content text';
+  const tone = 'angry';
 
   //  setup before each test
   beforeEach(() => {
@@ -29,17 +28,17 @@ describe('MessageService', () => {
 
     //  create firestore service spy
     firestoreServiceSpy = jasmine.createSpyObj(
-      'FirestoreService', 
+      'FirestoreService',
       ['collection', 'createId']);
     firestoreServiceSpy
-      .collection.and.callFake(() => mockObject)
+      .collection.and.callFake(() => mockObject);
 
     TestBed.configureTestingModule({
       providers: [
         MessageService, //  the service under test
         { provide: AngularFirestore, useValue: firestoreServiceSpy} //  mock service
       ]
-    })
+    });
 
   });
 
