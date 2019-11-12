@@ -6,7 +6,7 @@ describe('UserInfoService', () => {
   beforeEach(() => TestBed.configureTestingModule({
     providers: [
         UserInfoService,
-        AngularFirestore
+        { provide: AngularFirestore }
       ]
   }));
 

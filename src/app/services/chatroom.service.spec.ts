@@ -6,7 +6,7 @@ describe('ChatroomService', () => {
   beforeEach(() => TestBed.configureTestingModule({
     providers: [
         ChatroomService,
-        AngularFirestore
+        { provide: AngularFirestore }
       ]
   }));
 
