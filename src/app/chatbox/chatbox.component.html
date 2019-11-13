@@ -8,8 +8,8 @@
           </ng-template>
           <mat-list class="conversations">
             <mat-list-item
-              *ngFor="let conversation of conversations"
-              (click)="selectConversation(conversation.id)"
+              *ngFor="let conversation of conversations; let i = index;"
+              (click)="selectConversation(conversation.id, i)"
             >
               <mat-icon matListIcon>forum</mat-icon>
               <p>{{ conversation.display_name }}</p>
@@ -56,7 +56,7 @@
     <mat-list dense class="conversation-history mat-typography">
       <mat-list-item
         *ngFor="let event of events; index as i"
-        [dir]="event.from === selectedConversation.me.id ? 'rtl' : 'ltr'"
+        [dir]="event.from === this.userInfo.uid ? 'rtl' : 'ltr'"
       >
         <img
           *ngIf="event.type == 'text'"
