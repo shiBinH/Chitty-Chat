@@ -22,12 +22,9 @@
 <!-- <app-chatbox></app-chatbox> -->
 
 <div *ngIf="auth.user$ | async as user; else login">
-  <pre>
     <!-- {{ user | json }} -->
+    <app-header></app-header>
     <app-chatbox [userInfo]="user"></app-chatbox>
-  </pre>
-
-
 </div>
 
 <ng-template #login>

@@ -1,0 +1,32 @@
+<mat-toolbar color="black">
+    <button mat-icon-button>
+      <mat-icon (click)="sidenav.toggle()">menu</mat-icon>
+    </button>
+    <img src="assets/images/logo.jpg" width="180px" height="60px">
+    <div style="position:absolute; right:0">
+      <div class="menu-spacer">
+        <button [matMenuTriggerFor]="menu" style="border: 0px; padding-right: 20px; background-color: #212121;">
+          <mat-icon matListIcon class="icon" [ngStyle]="{'color': 'white'}">account_circle</mat-icon>
+        </button>
+        <mat-menu #menu="matMenu">
+          <i class="material-icons" (click)="auth.signOut()">
+            power_settings_new
+          </i>
+          <!-- <button mat-menu-item disabled>
+              <mat-icon>voicemail</mat-icon>
+              <span>thing2</span>
+            </button>
+            <button mat-menu-item>
+              <mat-icon>announcement</mat-icon>
+              <span>thing3</span>
+            </button> -->
+        </mat-menu>
+        <!-- <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css">
+        <form action="">
+          <input type="search">
+          <i class="fa fa-search"></i>
+        </form>
+      </div> -->
+      </div>
+    </div>
+  </mat-toolbar>

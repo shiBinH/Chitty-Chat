@@ -12,6 +12,7 @@ import { AngularFireAuth } from '@angular/fire/auth';
 import { AngularFirestore } from '@angular/fire/firestore';
 import { environment } from 'src/environments/environment';
 import { AngularFireModule } from '@angular/fire';
+import { HeaderComponent } from './header/header.component';
 
 
 describe('AppComponent', () => {
@@ -31,6 +32,7 @@ describe('AppComponent', () => {
       declarations: [
         AppComponent,
         ChatboxComponent,
+        HeaderComponent
       ],
       providers: [AngularFireAuth, AngularFirestore]
     }).compileComponents();
