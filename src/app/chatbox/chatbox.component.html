@@ -53,7 +53,7 @@
     </div>
 
     <mat-divider></mat-divider>
-    <mat-list dense class="conversation-history mat-typography">
+    <mat-list dense  class="conversation-history mat-typography">
       <mat-list-item
         *ngFor="let event of events; index as i"
         [dir]="event.from === this.userInfo.uid ? 'rtl' : 'ltr'"

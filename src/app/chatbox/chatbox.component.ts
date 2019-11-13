@@ -44,7 +44,7 @@ export class ChatboxComponent implements OnInit {
     // this is designed this way because we might have multiple memeber in a conversation
     members: [
       {
-        userID: 1,
+        userID: '1',
         name: 'Luke'
       }
     ],
@@ -56,17 +56,29 @@ export class ChatboxComponent implements OnInit {
   conversations = [];
 
   friendList = [
+    // {
+    //   id: 1,
+    //   name: 'Luke'
+    // },
+    // {
+    //   id: 2,
+    //   name: 'John'
+    // },
+    // {
+    //   id: 3,
+    //   name: 'Alex'
+    // },
     {
-      id: 1,
-      name: 'Luke'
+      id: 'SyFrC5N7QlUNyia8aJWqWySdDFx1',
+      name: 'random'
     },
     {
-      id: 2,
-      name: 'John'
+      id: 'l9A3All48lZkGjNhnOkTfF0JREg1',
+      name: 'general'
     },
     {
-      id: 3,
-      name: 'Alex'
+      id: 'yKoayuA5IIb32BUkKvYvWOk6xx13',
+      name: 'chittyC'
     }
   ];
 
@@ -119,7 +131,7 @@ export class ChatboxComponent implements OnInit {
     // console.log(this.messages);
 
     console.log(this.userInfo);
-    this.getFriendList();
+    // this.getFriendList();
     this.getConversations();
   }
 
@@ -214,6 +226,8 @@ export class ChatboxComponent implements OnInit {
     if (this.message !== '') {
       this.sendMsgToFirebase(message);
       this.message = '';
+      const objDiv = document.getElementById('content');
+      objDiv.scrollTop = objDiv.scrollHeight;
     }
   }
 }
