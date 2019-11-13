@@ -49,8 +49,8 @@ export class AuthService {
         email: user.email,
         displayName: user.displayName,
         photoURL: user.photoURL,
-        friendList: [],
-        chatrooms: []
+        friendList: user.friendList,
+        chatrooms: user.chatrooms
       };
 
       return userRef.set(data, { merge: true });

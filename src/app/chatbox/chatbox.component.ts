@@ -4,7 +4,14 @@ import { ChatService } from '../services/chat.service';
 // import 'rxjs/add/observable/from';
 // import 'rxjs/add/operator/map';
 import * as moment from 'moment';
-import { filter, distinctUntilChanged, skipWhile, scan, throttleTime, switchMap } from 'rxjs/operators';
+import {
+  filter,
+  distinctUntilChanged,
+  skipWhile,
+  scan,
+  throttleTime,
+  switchMap
+} from 'rxjs/operators';
 import { AuthService } from '../services/auth.service';
 import { AngularFireAuth } from '@angular/fire/auth';
 import { MessageService } from '../services/message.service';
@@ -22,7 +29,14 @@ import { Chatuser } from '../models/chatuser.model';
   styleUrls: ['./chatbox.component.scss']
 })
 export class ChatboxComponent implements OnInit {
-  @Input() userInfo: User;
+  @Input() userInfo: User = {
+        uid: '',
+        email: '',
+        displayName: '',
+        photoURL: '',
+        friendList: [],
+        chatrooms: []
+  };
   selectedChatRoomID = 'UgQEVNxekZrld8UJqtkZ';
   text: string;
   message = '';
@@ -30,7 +44,8 @@ export class ChatboxComponent implements OnInit {
   secretCode = 'secret';
   friendListId = [];
   conversationsListId = [];
-  selectedConversation = { // this is designed this way because we might have multiple memeber in a conversation
+  selectedConversation = {
+    // this is designed this way because we might have multiple memeber in a conversation
     members: [
       {
         userID: 1,
@@ -42,8 +57,7 @@ export class ChatboxComponent implements OnInit {
     },
     conversationID: 'UgQEVNxekZrld8UJqtkZ'
   };
-  conversations = [
-  ];
+  conversations = [];
 
   friendList = [
     {
@@ -57,7 +71,7 @@ export class ChatboxComponent implements OnInit {
     {
       id: 3,
       name: 'Alex'
-    },
+    }
   ];
 
   events = [
@@ -70,14 +84,16 @@ export class ChatboxComponent implements OnInit {
       from: '2',
       type: 'text',
       text: 'messages'
-    },
+    }
   ];
-  constructor(private chatService: ChatService,
-              public auth: AuthService,
-              private afAuth: AngularFireAuth,
-              private messageService: MessageService,
-              private userInfoService: UserInfoService,
-              private chatRoomService: ChatroomService) {}
+  constructor(
+    private chatService: ChatService,
+    public auth: AuthService,
+    private afAuth: AngularFireAuth,
+    private messageService: MessageService,
+    private userInfoService: UserInfoService,
+    private chatRoomService: ChatroomService
+  ) {}
 
   ngOnInit() {
     // this.chatService
@@ -103,7 +119,7 @@ export class ChatboxComponent implements OnInit {
     //   });
     //   });
     // });
-    this.updateChatHistory()
+    this.updateChatHistory();
     // console.log(this.messages);
 
     console.log(this.userInfo);
@@ -114,26 +130,27 @@ export class ChatboxComponent implements OnInit {
   updateChatHistory() {
     this.events = [];
     this.chatRoomService
-    .getUpdates(this.selectedChatRoomID)
-    .subscribe((message: any) => {
-      console.log(message);
-      message.forEach((element: Chat) => {
-        this.events.push({
-        from: '1',
-        type: 'text',
-        text: element.content
+      .getUpdates(this.selectedChatRoomID)
+      .subscribe((message: any) => {
+        console.log(message);
+        message.forEach((element: Chat) => {
+          this.events.push({
+            from: '1',
+            type: 'text',
+            text: element.content
+          });
+          console.log(this.events);
+        });
       });
-      console.log(this.events);
-      });
-    });
   }
 
   getFriendList() {
     this.friendListId = this.userInfo.friendList;
     console.log(this.friendList);
     this.friendListId.forEach(friendID => {
-      this.userInfoService.getCurrentUserInfo(friendID)
-        .subscribe((res: any) => { 
+      this.userInfoService
+        .getCurrentUserInfo(friendID)
+        .subscribe((res: any) => {
           console.log(res.payload.data());
           this.friendList.push({
             id: res.payload.data().uid,
@@ -141,11 +158,11 @@ export class ChatboxComponent implements OnInit {
           });
           console.log(this.friendList);
         });
-
-    })
+    });
     console.log(this.friendListId);
-    this.userInfoService.getCurrentUserInfo('ph84kj5XX2MHrCK30wqPhg10gRi1').subscribe(res => console.log(res.payload.data()))
-    
+    this.userInfoService
+      .getCurrentUserInfo('ph84kj5XX2MHrCK30wqPhg10gRi1')
+      .subscribe(res => console.log(res.payload.data()));
   }
 
   getConversations() {
@@ -153,9 +170,10 @@ export class ChatboxComponent implements OnInit {
     console.log(this.userInfo.chatrooms);
   }
 
-
   selectConversation(id: string, index: number) {
-    const result = this.conversations.filter((conversation) => conversation.id === id);
+    const result = this.conversations.filter(
+      conversation => conversation.id === id
+    );
     this.selectedConversation.members[0].name = result[0].display_name;
     this.openConversation(index);
   }
@@ -164,36 +182,42 @@ export class ChatboxComponent implements OnInit {
     this.selectedConversation.members[0].userID = this.friendList[index].id;
     this.selectedConversation.members[0].name = this.friendList[index].name;
     this.selectedChatRoomID = this.conversationsListId[index];
-    console.log(this.selectedChatRoomID );
+    console.log(this.selectedChatRoomID);
     this.updateChatHistory();
-    const friendIndex = this.conversations.findIndex(item => item.id === this.friendList[index].id);
+    const friendIndex = this.conversations.findIndex(
+      item => item.id === this.friendList[index].id
+    );
     if (friendIndex !== -1) {
       return;
     } else {
-    const conversation = {
+      const conversation = {
         id: this.friendList[index].id,
         display_name: this.friendList[index].name,
         chatRoomId: this.selectedChatRoomID
-    };
-    this.conversations.push(conversation);
-    console.log(conversation);
-  }
+      };
+      this.conversations.push(conversation);
+      console.log(conversation);
+    }
   }
 
   deleteConversation(id: string) {
     const deleteIndex = this.conversations.findIndex(item => item.id === id);
     this.conversations.splice(deleteIndex, 1);
-
   }
   sendMsgToFirebase(message: string) {
     const date = new Date();
-    this.messageService.sendMessage(this.userInfo.uid, date, this.selectedChatRoomID, message);
+    this.messageService.sendMessage(
+      this.userInfo.uid,
+      date,
+      this.selectedChatRoomID,
+      message
+    );
   }
 
   sendMessage(message: string) {
     if (this.message !== '') {
-    this.sendMsgToFirebase(message);
-    this.message = '';
+      this.sendMsgToFirebase(message);
+      this.message = '';
+    }
   }
-}
 }
