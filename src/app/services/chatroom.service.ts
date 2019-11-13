@@ -22,7 +22,7 @@ export class ChatroomService {
   }
 
   public getChatHistory(roomID: string) {
-    return this.db.collection('chatrooms/' + roomID + '/chats').snapshotChanges()
+    return this.db.collection(`chatrooms/${roomID}/chats`).snapshotChanges()
             .pipe(take(1))
             .pipe(map(actions =>
               actions.map(obj => {
