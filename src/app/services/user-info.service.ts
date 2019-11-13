@@ -22,6 +22,6 @@ export class UserInfoService {
   }
 
   public getCurrentUserInfo(userID: string) {
-    return this.db.doc('users/' + userID).snapshotChanges();
+    return this.db.doc(`users/${userID}`).snapshotChanges();
   }
 }
