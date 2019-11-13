@@ -34,7 +34,7 @@ export class ChatroomService {
           );
   }
 
-  public addNewChatroom(status: string, roomName: string, userList: string[], ownerID: string){
+  public addNewChatroom(status: string, roomName: string, userList: string[], ownerID: string) {
     this.db
       .collection(`chatrooms`)
       .doc(this.db.createId())
@@ -48,7 +48,7 @@ export class ChatroomService {
       .then((data) => {
         console.log('new room created!');
       })
-      .catch(e =>{
+      .catch(e => {
         console.log(e);
       });
 
