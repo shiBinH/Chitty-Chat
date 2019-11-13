@@ -61,12 +61,12 @@
         <img
           *ngIf="event.type == 'text'"
           matListAvatar
-          matTooltip="{{ selectedConversation.members[0].name }}"
+          matTooltip="{{ event.from === this.userInfo.uid ?  userInfo.displayName : selectedConversation.members[0].name}}"
           src="https://randomuser.me/api/portraits/thumb/lego/{{ i % 10 }}.jpg"
         />
         <p *ngIf="event.type == 'text'" [dir]="'ltr'">{{ event.text }}</p>
         <p *ngIf="event.type == 'member:joined'" class="text-center">
-          <b>{{ selectedConversation.members[event.from].name }}</b>
+          <!-- <b>{{ selectedConversation.members[event.from].name }}</b> -->
           has joined the conversation
         </p>
       </mat-list-item>

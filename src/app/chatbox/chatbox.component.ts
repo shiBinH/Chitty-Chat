@@ -33,6 +33,7 @@ export class ChatboxComponent implements OnInit {
   @Input() userInfo: User;
   selectedChatRoomID = 'UgQEVNxekZrld8UJqtkZ';
   chatroomSubscription: Subscription;
+  selectedName: string;
   text: string;
   message = '';
   messages: string[] = [];
@@ -130,7 +131,7 @@ export class ChatboxComponent implements OnInit {
         console.log(message);
         message.forEach((element: Chat) => {
           this.events.push({
-            from: '1',
+            from: element.user,
             type: 'text',
             text: element.content
           });
