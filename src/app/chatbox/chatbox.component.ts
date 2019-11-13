@@ -39,7 +39,12 @@ export class ChatboxComponent implements OnInit {
   messages: string[] = [];
   secretCode = 'secret';
   friendListId = [];
-  conversationsListId = [];
+  conversationsListId = [
+    '05kbCceCnYxcfOxewCJK',
+    'UgQEVNxekZrld8UJqtkZ',
+    'e0cGp5IpWGb9AuC3iuM2',
+    'ji9ldKigbHxBadcZyb1E'
+  ];
   selectedConversation = {
     // this is designed this way because we might have multiple memeber in a conversation
     members: [
@@ -70,15 +75,15 @@ export class ChatboxComponent implements OnInit {
     // },
     {
       id: 'SyFrC5N7QlUNyia8aJWqWySdDFx1',
-      name: 'random'
+      name: 'Random'
     },
     {
       id: 'l9A3All48lZkGjNhnOkTfF0JREg1',
-      name: 'general'
+      name: 'General'
     },
     {
       id: 'yKoayuA5IIb32BUkKvYvWOk6xx13',
-      name: 'chittyC'
+      name: 'ChittyC'
     }
   ];
 
@@ -132,7 +137,7 @@ export class ChatboxComponent implements OnInit {
 
     console.log(this.userInfo);
     // this.getFriendList();
-    this.getConversations();
+    // this.getConversations();
   }
 
   updateChatHistory() {
