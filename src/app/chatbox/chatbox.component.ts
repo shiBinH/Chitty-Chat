@@ -12,6 +12,8 @@ import { UserInfoService } from '../services/user-info.service';
 import { ChatroomService } from '../services/chatroom.service';
 import { User } from '../models/user.model';
 import { Chat } from '../models/chat.model';
+import { UserInfo } from 'firebase';
+import { Chatuser } from '../models/chatuser.model';
 // import randomString from 'randomstring';
 
 @Component({
@@ -33,18 +35,10 @@ export class ChatboxComponent implements OnInit {
       {
         userID: 1,
         name: 'Luke'
-      },
-      {
-        userID: 2,
-        name: 'Alex'
-      },
-      {
-        userID: 3,
-        name: 'John'
-      },
+      }
     ],
     me: {
-      id: 'UgQEVNxekZrld8UJqtkZ'
+      id: 'ph84kj5XX2MHrCK30wqPhg10gRi1'
     },
     conversationID: 'UgQEVNxekZrld8UJqtkZ'
   };
@@ -97,6 +91,28 @@ export class ChatboxComponent implements OnInit {
     //     });
     //   });
 
+    // this.chatRoomService
+    // .getUpdates(this.selectedChatRoomID)
+    // .subscribe((message: any) => {
+    //   console.log(message);
+    //   message.forEach((element: Chat) => {
+    //     this.events.push({
+    //     from: '1',
+    //     type: 'text',
+    //     text: element.content
+    //   });
+    //   });
+    // });
+    this.updateChatHistory()
+    // console.log(this.messages);
+
+    console.log(this.userInfo);
+    this.getFriendList();
+    this.getConversations();
+  }
+
+  updateChatHistory() {
+    this.events = [];
     this.chatRoomService
     .getUpdates(this.selectedChatRoomID)
     .subscribe((message: any) => {
@@ -107,26 +123,49 @@ export class ChatboxComponent implements OnInit {
         type: 'text',
         text: element.content
       });
+      console.log(this.events);
       });
-      // this.events.push({
-      //   from: message.user,
-      //   type: 'text',
-      //   text: message.content
-      // });
     });
-    // console.log(this.messages);
+  }
 
-    console.log(this.userInfo);
+  getFriendList() {
+    this.friendListId = this.userInfo.friendList;
+    console.log(this.friendList);
+    this.friendListId.forEach(friendID => {
+      this.userInfoService.getCurrentUserInfo(friendID)
+        .subscribe((res: any) => { 
+          console.log(res.payload.data());
+          this.friendList.push({
+            id: res.payload.data().uid,
+            name: res.payload.data().displayName.substring(0, 7)
+          });
+          console.log(this.friendList);
+        });
+
+    })
+    console.log(this.friendListId);
+    this.userInfoService.getCurrentUserInfo('ph84kj5XX2MHrCK30wqPhg10gRi1').subscribe(res => console.log(res.payload.data()))
+    
+  }
+
+  getConversations() {
+    this.conversationsListId = this.userInfo.chatrooms;
+    console.log(this.userInfo.chatrooms);
   }
 
 
-  selectConversation(id: string) {
+  selectConversation(id: string, index: number) {
     const result = this.conversations.filter((conversation) => conversation.id === id);
     this.selectedConversation.members[0].name = result[0].display_name;
+    this.openConversation(index);
   }
 
   openConversation(index: number) {
+    this.selectedConversation.members[0].userID = this.friendList[index].id;
     this.selectedConversation.members[0].name = this.friendList[index].name;
+    this.selectedChatRoomID = this.conversationsListId[index];
+    console.log(this.selectedChatRoomID );
+    this.updateChatHistory();
     const friendIndex = this.conversations.findIndex(item => item.id === this.friendList[index].id);
     if (friendIndex !== -1) {
       return;
@@ -134,9 +173,10 @@ export class ChatboxComponent implements OnInit {
     const conversation = {
         id: this.friendList[index].id,
         display_name: this.friendList[index].name,
-        message: ['message1']
+        chatRoomId: this.selectedChatRoomID
     };
     this.conversations.push(conversation);
+    console.log(conversation);
   }
   }
 

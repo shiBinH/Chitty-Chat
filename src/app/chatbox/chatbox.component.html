@@ -8,8 +8,8 @@
           </ng-template>
           <mat-list class="conversations">
             <mat-list-item
-              *ngFor="let conversation of conversations"
-              (click)="selectConversation(conversation.id)"
+              *ngFor="let conversation of conversations; let i = index;"
+              (click)="selectConversation(conversation.id, i)"
             >
               <mat-icon matListIcon>forum</mat-icon>
               <p>{{ conversation.display_name }}</p>
