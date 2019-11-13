@@ -29,14 +29,7 @@ import { Chatuser } from '../models/chatuser.model';
   styleUrls: ['./chatbox.component.scss']
 })
 export class ChatboxComponent implements OnInit {
-  @Input() userInfo: User = {
-        uid: '',
-        email: '',
-        displayName: '',
-        photoURL: '',
-        friendList: [],
-        chatrooms: []
-  };
+  @Input() userInfo: User;
   selectedChatRoomID = 'UgQEVNxekZrld8UJqtkZ';
   text: string;
   message = '';
@@ -145,7 +138,7 @@ export class ChatboxComponent implements OnInit {
   }
 
   getFriendList() {
-    this.friendListId = this.userInfo.friendList;
+    this.friendListId = this.userInfo ? this.userInfo.friendList : [];
     console.log(this.friendList);
     this.friendListId.forEach(friendID => {
       this.userInfoService
@@ -166,8 +159,7 @@ export class ChatboxComponent implements OnInit {
   }
 
   getConversations() {
-    this.conversationsListId = this.userInfo.chatrooms;
-    console.log(this.userInfo.chatrooms);
+    this.conversationsListId = this.userInfo ? this.userInfo.chatrooms : [];
   }
 
   selectConversation(id: string, index: number) {
