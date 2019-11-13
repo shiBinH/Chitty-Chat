@@ -50,7 +50,7 @@ export class ChatboxComponent implements OnInit {
     members: [
       {
         userID: '1',
-        name: 'Luke'
+        name: 'Random'
       }
     ],
     me: {
