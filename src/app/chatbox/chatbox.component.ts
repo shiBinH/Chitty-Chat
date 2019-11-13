@@ -7,6 +7,11 @@ import * as moment from 'moment';
 import { filter, distinctUntilChanged, skipWhile, scan, throttleTime, switchMap } from 'rxjs/operators';
 import { AuthService } from '../services/auth.service';
 import { AngularFireAuth } from '@angular/fire/auth';
+import { MessageService } from '../services/message.service';
+import { UserInfoService } from '../services/user-info.service';
+import { ChatroomService } from '../services/chatroom.service';
+import { User } from '../models/user.model';
+import { Chat } from '../models/chat.model';
 // import randomString from 'randomstring';
 
 @Component({
@@ -15,7 +20,8 @@ import { AngularFireAuth } from '@angular/fire/auth';
   styleUrls: ['./chatbox.component.scss']
 })
 export class ChatboxComponent implements OnInit {
-  @Input() userJson: any;
+  @Input() userInfo: User;
+  selectedChatRoomID = 'UgQEVNxekZrld8UJqtkZ';
   text: string;
   message = '';
   messages: string[] = [];
@@ -36,9 +42,9 @@ export class ChatboxComponent implements OnInit {
       },
     ],
     me: {
-      id: 1
+      id: 'UgQEVNxekZrld8UJqtkZ'
     },
-    conversationID: 10
+    conversationID: 'UgQEVNxekZrld8UJqtkZ'
   };
   conversations = [
   ];
@@ -60,34 +66,57 @@ export class ChatboxComponent implements OnInit {
 
   events = [
     {
-      from: 1,
+      from: '1',
       type: 'text',
       text: 'mesages'
     },
     {
-      from: 2,
+      from: '2',
       type: 'text',
       text: 'messages'
     },
   ];
-  constructor(private chatService: ChatService, public auth: AuthService, private afAuth: AngularFireAuth) {}
+  constructor(private chatService: ChatService,
+              public auth: AuthService,
+              private afAuth: AngularFireAuth,
+              private messageService: MessageService,
+              private userInfoService: UserInfoService,
+              private chatRoomService: ChatroomService) {}
 
   ngOnInit() {
-    this.chatService
-      .getMessages()
-      .subscribe((message: string) => {
-        this.messages.push(message);
-        this.events.push({
-          from: 1,
-          type: 'text',
-          text: message
-        });
-      });
-    console.log(this.messages);
-    if (this.auth.user$) {
+    // this.chatService
+    //   .getMessages()
+    //   .subscribe((message: string) => {
+    //     this.messages.push(message);
+    //     this.events.push({
+    //       from: '1',
+    //       type: 'text',
+    //       text: message
+    //     });
+    //   });
 
-    }
+    this.chatRoomService
+    .getUpdates(this.selectedChatRoomID)
+    .subscribe((message: any) => {
+      console.log(message);
+      message.forEach((element: Chat) => {
+        this.events.push({
+        from: '1',
+        type: 'text',
+        text: element.content
+      });
+      });
+      // this.events.push({
+      //   from: message.user,
+      //   type: 'text',
+      //   text: message.content
+      // });
+    });
+    // console.log(this.messages);
+
+    console.log(this.userInfo);
   }
+
 
   selectConversation(id: string) {
     const result = this.conversations.filter((conversation) => conversation.id === id);
@@ -116,30 +145,37 @@ export class ChatboxComponent implements OnInit {
   }
   sendText(text) { console.log(this.text); }
 
-  sendMessage() {
+  sendMsgToFirebase(message: string) {
+    const date = new Date();
+    this.messageService.sendMessage(this.userInfo.uid, date, this.selectedChatRoomID, message);
+  }
+
+  sendMessage(message: string) {
     if (this.message !== '') {
-    this.chatService.sendMessage(this.message);
-    console.log(this.message);
+    this.sendMsgToFirebase(message);
     this.message = '';
-    this.chatService
-      .getMessages()
-      .distinctUntilChanged()
-      .filter((message) => message.trim().length > 0)
-      .throttleTime(1000)
-      .skipWhile((message) => message !== this.secretCode)
-      .scan((acc: string, message: string, index: number) =>
-          `${message}(${index + 1})`
-        , 1)
-      .subscribe((message: string) => {
-        const currentTime = moment().format('hh:mm:ss a');
-        const messageWithTimestamp = `${currentTime}: ${message}`;
-        this.messages.push(messageWithTimestamp);
-        this.events.push({
-          from: 2,
-          type: 'text',
-          text: messageWithTimestamp
-        });
-      });
+    // this.chatService.sendMessage(this.message);
+    // console.log(this.message);
+    // this.message = '';
+    // this.chatService
+    //   .getMessages()
+    //   .distinctUntilChanged()
+    //   .filter((message) => message.trim().length > 0)
+    //   .throttleTime(1000)
+    //   .skipWhile((message) => message !== this.secretCode)
+    //   .scan((acc: string, message: string, index: number) =>
+    //       `${message}(${index + 1})`
+    //     , 1)
+    //   .subscribe((message: string) => {
+    //     const currentTime = moment().format('hh:mm:ss a');
+    //     const messageWithTimestamp = `${currentTime}: ${message}`;
+    //     this.messages.push(messageWithTimestamp);
+    //     this.events.push({
+    //       from: '2',
+    //       type: 'text',
+    //       text: messageWithTimestamp
+    //     });
+    //   });
   }
 }
 }

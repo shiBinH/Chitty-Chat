@@ -6,4 +6,5 @@ export interface Chat {
     tone_id: string;
     type: string;
     when: string;
+    user: string;
 }

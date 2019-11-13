@@ -66,8 +66,8 @@
         <img
           *ngIf="event.type == 'text'"
           matListAvatar
-          matTooltip="{{ selectedConversation.members[event.from].name }}"
-          src="https://randomuser.me/api/portraits/thumb/lego/{{ i }}.jpg"
+          matTooltip="{{ selectedConversation.members[0].name }}"
+          src="https://randomuser.me/api/portraits/thumb/lego/{{ i % 10 }}.jpg"
         />
         <p *ngIf="event.type == 'text'" [dir]="'ltr'">{{ event.text }}</p>
         <p *ngIf="event.type == 'member:joined'" class="text-center">
