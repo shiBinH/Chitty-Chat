@@ -63,6 +63,9 @@ export class ChatroomService {
           const data = a.payload.doc.data();
           const id = a.payload.doc.id;
           return { id, ...data };
+        })),
+        map(messages => messages.sort((a: any, b: any) => {
+          return a.when.seconds - b.when.seconds;
         })));
   }
 
