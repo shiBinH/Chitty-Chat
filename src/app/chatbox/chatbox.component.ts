@@ -44,7 +44,7 @@ export class ChatboxComponent implements OnInit {
     // this is designed this way because we might have multiple memeber in a conversation
     members: [
       {
-        userID: 1,
+        userID: '1',
         name: 'Luke'
       }
     ],
