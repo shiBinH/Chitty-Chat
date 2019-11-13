@@ -21,6 +21,7 @@ import { User } from '../models/user.model';
 import { Chat } from '../models/chat.model';
 import { UserInfo } from 'firebase';
 import { Chatuser } from '../models/chatuser.model';
+import { Subscription } from 'rxjs';
 // import randomString from 'randomstring';
 
 @Component({
@@ -31,6 +32,7 @@ import { Chatuser } from '../models/chatuser.model';
 export class ChatboxComponent implements OnInit {
   @Input() userInfo: User;
   selectedChatRoomID = 'UgQEVNxekZrld8UJqtkZ';
+  chatroomSubscription: Subscription;
   text: string;
   message = '';
   messages: string[] = [];
@@ -122,7 +124,7 @@ export class ChatboxComponent implements OnInit {
 
   updateChatHistory() {
     this.events = [];
-    this.chatRoomService
+    this.chatroomSubscription = this.chatRoomService
       .getUpdates(this.selectedChatRoomID)
       .subscribe((message: any) => {
         console.log(message);
@@ -171,6 +173,7 @@ export class ChatboxComponent implements OnInit {
   }
 
   openConversation(index: number) {
+    this.chatroomSubscription.unsubscribe();
     this.selectedConversation.members[0].userID = this.friendList[index].id;
     this.selectedConversation.members[0].name = this.friendList[index].name;
     this.selectedChatRoomID = this.conversationsListId[index];
