@@ -26,6 +26,8 @@ export class ChatboxComponent implements OnInit {
   message = '';
   messages: string[] = [];
   secretCode = 'secret';
+  friendListId = [];
+  conversationsListId = [];
   selectedConversation = { // this is designed this way because we might have multiple memeber in a conversation
     members: [
       {
@@ -143,8 +145,6 @@ export class ChatboxComponent implements OnInit {
     this.conversations.splice(deleteIndex, 1);
 
   }
-  sendText(text) { console.log(this.text); }
-
   sendMsgToFirebase(message: string) {
     const date = new Date();
     this.messageService.sendMessage(this.userInfo.uid, date, this.selectedChatRoomID, message);
@@ -154,28 +154,6 @@ export class ChatboxComponent implements OnInit {
     if (this.message !== '') {
     this.sendMsgToFirebase(message);
     this.message = '';
-    // this.chatService.sendMessage(this.message);
-    // console.log(this.message);
-    // this.message = '';
-    // this.chatService
-    //   .getMessages()
-    //   .distinctUntilChanged()
-    //   .filter((message) => message.trim().length > 0)
-    //   .throttleTime(1000)
-    //   .skipWhile((message) => message !== this.secretCode)
-    //   .scan((acc: string, message: string, index: number) =>
-    //       `${message}(${index + 1})`
-    //     , 1)
-    //   .subscribe((message: string) => {
-    //     const currentTime = moment().format('hh:mm:ss a');
-    //     const messageWithTimestamp = `${currentTime}: ${message}`;
-    //     this.messages.push(messageWithTimestamp);
-    //     this.events.push({
-    //       from: '2',
-    //       type: 'text',
-    //       text: messageWithTimestamp
-    //     });
-    //   });
   }
 }
 }
