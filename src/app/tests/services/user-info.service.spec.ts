@@ -5,63 +5,76 @@ import { of } from 'rxjs';
 
 let service: UserInfoService;
 
-// mock return
-const userListRes = {
-  id: 'mock id',
-  data: 'mock data'
-};
+describe('UserInfoService.getUserList()', () => {
 
-// mock snapshotChanges for mock collection
-const userCollectionSpy = jasmine.createSpyObj({
-  snapshotChanges: of(userListRes)
-});
+  const mockReturn = [{
+    payload: {
+      doc: {
+        data() {
+          return {data: 'mock data'};
+        },
+        id: 'mock id'
+      }
+    }
+  }];
 
-// mock collection for AngularFirestore
-const userListFuncspy = jasmine.createSpyObj('AngularFirestore', {
-  collection: userCollectionSpy
-});
+  const mockCollection = jasmine.createSpyObj({
+    snapshotChanges: of(mockReturn)
+  });
 
-describe('UserInfoService', () => {
+  const firestoreServiceSpy = jasmine.createSpyObj('AngularFirestore', {
+    collection: mockCollection
+  });
+
   beforeEach(() => {
     TestBed.configureTestingModule({
     providers: [
         UserInfoService,
-        { provide: AngularFirestore, useValue: userListFuncspy }
+        { provide: AngularFirestore, useValue: firestoreServiceSpy }
       ],
   });
     service = TestBed.get(UserInfoService);
 });
 
-  it('calling getUserList() should call a firestore collection and snapshotChanges', () => {
+  it('calling getUserList() should return an observable', () => {
 
-    service.getUserList();
+    let respond;
+    service.getUserList().subscribe(res => {
+      respond = res;
+    });
+    expect(mockCollection.snapshotChanges).toHaveBeenCalled();
+    expect(firestoreServiceSpy.collection).toHaveBeenCalledWith('users');
 
-    expect(userCollectionSpy.snapshotChanges).toHaveBeenCalled();
-    expect(userListFuncspy.collection).toHaveBeenCalledWith('users');
+    expect(respond[0].id).toEqual('mock id');
+    expect(respond[0].data).toEqual('mock data');
+
   });
 });
 
+describe('UserInfoService.getCurrentUserInfo()', () => {
 
+  const mockReturn = {
+    payload: {
+      id: 'mock id',
+      data() {
+        return 'mock data';
+      }
+    }
+  };
 
-const currentUserRes = {
-  name: 'mock name',
-  data: 'mock data'
-};
+  const mockDoc = jasmine.createSpyObj({
+    snapshotChanges: of(mockReturn)
+  });
 
-const userDocSpy = jasmine.createSpyObj({
-  snapshotChanges: of(currentUserRes)
-});
+  const firestoreServiceSpy = jasmine.createSpyObj('AngularFirestore', {
+    doc: mockDoc
+  });
 
-const currentUserFuncspy = jasmine.createSpyObj('AngularFirestore', {
-  doc: userDocSpy
-});
-
-describe('UserInfoService', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
     providers: [
         UserInfoService,
-        { provide: AngularFirestore, useValue: currentUserFuncspy }
+        { provide: AngularFirestore, useValue: firestoreServiceSpy }
       ],
   });
     service = TestBed.get(UserInfoService);
@@ -69,18 +82,18 @@ describe('UserInfoService', () => {
 
   it('calling getCurrentUserInfo() should return an observable', () => {
 
-    let ret;
+    let respond;
     service.getCurrentUserInfo('mock user').subscribe(res => {
-      ret = res;
+      respond = res;
     });
 
-    expect(ret.name).toEqual('mock name');
-    expect(ret.data).toEqual('mock data');
-    expect(currentUserFuncspy.doc).toHaveBeenCalledWith('users/mock user');
-    expect(userDocSpy.snapshotChanges).toHaveBeenCalled();
+    expect(firestoreServiceSpy.doc).toHaveBeenCalledWith('users/mock user');
+    expect(mockDoc.snapshotChanges).toHaveBeenCalled();
 
-    // test observable
-    currentUserRes.name = 'modified name';
-    expect(ret.name).toEqual('modified name');
+    expect(respond.payload.id).toEqual('mock id');
+    expect(respond.payload.data()).toEqual('mock data');
+
+    mockReturn.payload.id = 'modified id';
+    expect(respond.payload.id).toEqual('modified id');
   });
 });
