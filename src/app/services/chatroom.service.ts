@@ -34,6 +34,7 @@ export class ChatroomService {
           );
   }
 
+  // status can be public/private
   public addNewChatroom(status: string, roomName: string, userList: string[], ownerID: string) {
     this.db
       .collection(`chatrooms`)
