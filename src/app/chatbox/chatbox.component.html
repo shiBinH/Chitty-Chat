@@ -62,7 +62,7 @@
         <img
           *ngIf="event.type == 'text'"
           matListAvatar
-          matTooltip="{{ event.from === this.userInfo.uid ?  userInfo.displayName : userInfo.displayName}}"
+          matTooltip="{{ event.from === this.userInfo.uid ?  userInfo.displayName : this.selectedConversation.name}}"
           src="https://randomuser.me/api/portraits/thumb/lego/{{ i % 10 }}.jpg"
         />
         <p *ngIf="event.type == 'text'" [dir]="'ltr'">{{ event.text }}</p>
