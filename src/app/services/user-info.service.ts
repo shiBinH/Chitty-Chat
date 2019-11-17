@@ -8,7 +8,8 @@ export class UserInfoService {
 
   constructor(private db: AngularFirestore) { }
 
-
+  // will return an observable object
+  // use subscribe to achieve data
   public getUserList() {
     return this.db.collection('users').snapshotChanges()
             .pipe(map(actions =>
@@ -21,6 +22,8 @@ export class UserInfoService {
           );
   }
 
+  // use respond.payload.data() to achieve metadata
+  // and respond.payload.id to achieve id
   public getCurrentUserInfo(userID: string) {
     return this.db.doc(`users/${userID}`).snapshotChanges();
   }
