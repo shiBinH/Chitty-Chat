@@ -29,7 +29,7 @@
     <mat-card>
       <mat-list class="conversations">
         <mat-list-item
-          *ngFor="let friend of friendList; let i = index"
+          *ngFor="let friend of chatroomList; let i = index"
           (click)="openConversation(i)"
         >
           <p>{{ friend.name }}</p>
@@ -46,7 +46,7 @@
     <div class="mat-typography conversation-header">
       <h2>
         <mat-icon>forum</mat-icon>
-        {{ selectedConversation.members[0].name }}
+        {{ selectedConversation.name }}
       </h2>
       <!-- <p>
           <mat-icon>account_circle</mat-icon>
@@ -62,7 +62,7 @@
         <img
           *ngIf="event.type == 'text'"
           matListAvatar
-          matTooltip="{{ event.from === this.userInfo.uid ?  userInfo.displayName : selectedConversation.members[0].name}}"
+          matTooltip="{{ event.from === this.userInfo.uid ?  userInfo.displayName : userInfo.displayName}}"
           src="https://randomuser.me/api/portraits/thumb/lego/{{ i % 10 }}.jpg"
         />
         <p *ngIf="event.type == 'text'" [dir]="'ltr'">{{ event.text }}</p>
