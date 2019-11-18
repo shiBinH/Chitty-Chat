@@ -22,7 +22,13 @@ import { Chat } from '../models/chat.model';
 import { UserInfo } from 'firebase';
 import { Chatuser } from '../models/chatuser.model';
 import { Subscription } from 'rxjs';
+import { CreateChannelComponent } from '../createchannel/createchannel.component';
+import { MatDialog, MAT_DIALOG_DATA } from '@angular/material/dialog';
 // import randomString from 'randomstring';
+export interface DialogData {
+  chatroomName: string;
+  userID: string;
+}
 
 @Component({
   selector: 'app-chatbox',
@@ -30,6 +36,8 @@ import { Subscription } from 'rxjs';
   styleUrls: ['./chatbox.component.scss']
 })
 export class ChatboxComponent implements OnInit {
+  chatroomName: string;
+  userID: string;
   @Input() userInfo: User;
   selectedChatRoomID = 'UgQEVNxekZrld8UJqtkZ';
   chatroomSubscription: Subscription;
@@ -102,6 +110,7 @@ export class ChatboxComponent implements OnInit {
   constructor(
     private chatService: ChatService,
     public auth: AuthService,
+    public dialog: MatDialog,
     private afAuth: AngularFireAuth,
     private messageService: MessageService,
     private userInfoService: UserInfoService,
@@ -235,4 +244,16 @@ export class ChatboxComponent implements OnInit {
       objDiv.scrollTop = objDiv.scrollHeight;
     }
   }
+  openDialog(): void {
+    const dialogRef = this.dialog.open(CreateChannelComponent, {
+      width: '2000px',
+      data: {userID: this.userID, chatroomName: this.chatroomName}
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      console.log('The dialog was closed');
+      this.chatroomName = result;
+    });
+  }
+
 }

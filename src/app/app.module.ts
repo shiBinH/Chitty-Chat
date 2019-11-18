@@ -17,6 +17,7 @@ import { LoginComponent } from './login/login.component';
 
 import { environment } from '../environments/environment';
 import { HeaderComponent } from './header/header.component';
+import { CreateChannelComponent } from './createchannel/createchannel.component';
 
 const config = {
   apiKey: 'AIzaSyD-9drCjUDfcRit3vaqTkY_8PVZCOsfiiA',
@@ -33,7 +34,8 @@ const config = {
     AppComponent,
     ChatboxComponent,
     LoginComponent,
-    HeaderComponent
+    HeaderComponent,
+    CreateChannelComponent
   ],
   imports: [
     BrowserModule,
@@ -52,6 +54,7 @@ const config = {
   exports: [
   ],
   providers: [ChatService],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
+  entryComponents: [CreateChannelComponent]
 })
 export class AppModule { }

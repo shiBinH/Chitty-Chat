@@ -1,0 +1,18 @@
+<h1 mat-dialog-title>Say hello...</h1>
+<div mat-dialog-content>
+  <p>Who do you want to chat with today?</p>
+  <mat-nav-list position="end" mode="side" opened > 
+    <mat-card>
+      <div mat-dialog-content>
+        <p>Create Chatroom Name</p>
+        <mat-form-field>
+          <input matInput [(ngModel)]="data.chatroomName">
+        </mat-form-field>
+      </div>
+      </mat-card>
+  </mat-nav-list>
+</div>
+<div mat-dialog-actions>
+  <button mat-button (click)="onNoClick()">Exit</button>
+  <button mat-button [mat-dialog-close]="data.chatroomName" >Start Chatting!</button>
+</div>
