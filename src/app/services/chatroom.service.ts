@@ -50,7 +50,7 @@ export class ChatroomService {
         console.log('new room created!');
       })
       .catch(e => {
-        console.log(e);
+        return e.messages;
       });
 
   }
