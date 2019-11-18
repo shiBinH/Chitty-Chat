@@ -25,7 +25,7 @@
       </mat-tab-group>
     </mat-card>
   </mat-sidenav>
-  <mat-sidenav position="end" mode="side" opened *ngIf="selectedConversation">
+  <mat-sidenav [ngStyle]="{'width': '150px'}" position="end" mode="side" opened *ngIf="selectedConversation">
     <mat-card>
       <mat-list class="conversations">
         <mat-list-item
