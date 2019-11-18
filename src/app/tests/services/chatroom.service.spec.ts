@@ -110,7 +110,7 @@ describe('ChatroomService.getChatroomList()', () => {
     expect(respond[0].data).toEqual('mock data');
 
     expect(mockCollection.snapshotChanges).toHaveBeenCalled();
-    expect(firestoreServiceSpy.collection).toHaveBeenCalledWith('chatrooms');;
+    expect(firestoreServiceSpy.collection).toHaveBeenCalledWith('chatrooms');
   });
 
 });
@@ -161,7 +161,7 @@ describe('ChatroomService.getChatHistory()', () => {
     expect(respond[0].data).toEqual('mock data');
 
     expect(mockCollection.snapshotChanges).toHaveBeenCalled();
-    expect(firestoreServiceSpy.collection).toHaveBeenCalledWith('chatrooms/fake roomId/chats');;
+    expect(firestoreServiceSpy.collection).toHaveBeenCalledWith('chatrooms/fake roomId/chats');
   });
 
 });
