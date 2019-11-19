@@ -25,9 +25,10 @@
       </mat-tab-group>
     </mat-card>
   </mat-sidenav>
-  <mat-sidenav [ngStyle]="{'width': '150px'}" position="end" mode="side" opened *ngIf="selectedConversation">
+  <mat-sidenav position="end" mode="side" opened *ngIf="selectedConversation">
     <mat-card>
       <mat-list class="conversations">
+        <mat-list-item *ngIf="chatroomList.length === 0">Loading...</mat-list-item>
         <mat-list-item
           *ngFor="let friend of chatroomList; let i = index"
           (click)="openConversation(i)"
