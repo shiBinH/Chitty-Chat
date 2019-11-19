@@ -2,7 +2,6 @@ import { TestBed } from '@angular/core/testing';
 import { AngularFirestore } from '@angular/fire/firestore';
 import { ChatroomService } from '../../services/chatroom.service';
 import { Observable } from 'rxjs';
-import { async } from 'q';
 
 describe('ChatroomService.getUpdates()', () => {
   const CHATROOM_ID = 'chatroomID';
@@ -182,11 +181,9 @@ describe('ChatroomService.addNewChatroom()', () => {
 
     mockObject = jasmine.createSpyObj(
       'MockReturnObject',
-      ['doc', 'set', 'then', 'catch']);
+      ['doc', 'set']);
 
     mockObject.doc.and.returnValue(mockObject);
-    mockObject.set.and.returnValue(mockObject);
-    mockObject.then.and.returnValue(mockObject);
 
     firestoreServiceSpy = jasmine.createSpyObj(
       'FirestoreService',
@@ -204,21 +201,22 @@ describe('ChatroomService.addNewChatroom()', () => {
   });
 
   it('addNewChatroom() SHOULD return IF valid input ', () => {
+
+    const RESOVLED_PROMISE = Promise.resolve('resolved').then((message) => {
+      expect(message).toEqual('resolved');
+    });
+    mockObject.set.and.returnValue(RESOVLED_PROMISE);
+
     serviceUnderTest = TestBed.get(ChatroomService);
     serviceUnderTest.addNewChatroom(status, roomName, userList, ownerID);
 
     expect(firestoreServiceSpy.collection).toHaveBeenCalled();
     expect(mockObject.doc).toHaveBeenCalled();
     expect(mockObject.set).toHaveBeenCalled();
-    expect(mockObject.then).toHaveBeenCalled();
   });
 
   it('addNewChatroom() SHOULD catch IF invalid input ', () => {
-    mockObject = jasmine.createSpyObj(
-      'MockReturnObject',
-      ['doc', 'set']);
 
-    mockObject.doc.and.returnValue(mockObject);
     const REJECTED_PROMISE = Promise.reject(new Error('error')).catch((error) => {
       expect(error.message).toEqual('error');
     });
@@ -228,6 +226,8 @@ describe('ChatroomService.addNewChatroom()', () => {
     serviceUnderTest.addNewChatroom(status, roomName, userList, ownerID);
 
     expect(firestoreServiceSpy.collection).toHaveBeenCalled();
+    expect(mockObject.doc).toHaveBeenCalled();
+    expect(mockObject.set).toHaveBeenCalled();
 
   });
 
