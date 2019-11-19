@@ -6,4 +6,5 @@ export interface User {
     myCustomData?: string;
     friendList: string[];
     chatrooms: string[];
+    chatroomsRef?: string[];
 }
