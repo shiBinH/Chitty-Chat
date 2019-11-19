@@ -2,6 +2,7 @@ import { TestBed } from '@angular/core/testing';
 import { AngularFirestore } from '@angular/fire/firestore';
 import { ChatroomService } from '../../services/chatroom.service';
 import { Observable } from 'rxjs';
+import { async } from 'q';
 
 describe('ChatroomService.getUpdates()', () => {
   const CHATROOM_ID = 'chatroomID';
@@ -210,6 +211,24 @@ describe('ChatroomService.addNewChatroom()', () => {
     expect(mockObject.doc).toHaveBeenCalled();
     expect(mockObject.set).toHaveBeenCalled();
     expect(mockObject.then).toHaveBeenCalled();
+  });
+
+  it('addNewChatroom() SHOULD return IF valid input ', () => {
+    mockObject = jasmine.createSpyObj(
+      'MockReturnObject',
+      ['doc', 'set']);
+
+    mockObject.doc.and.returnValue(mockObject);
+    const REJECTED_PROMISE = Promise.reject(new Error('error')).catch((error) => {
+      expect(error.message).toEqual('error');
+    });
+    mockObject.set.and.returnValue(REJECTED_PROMISE);
+
+    serviceUnderTest = TestBed.get(ChatroomService);
+    serviceUnderTest.addNewChatroom(status, roomName, userList, ownerID);
+
+    expect(firestoreServiceSpy.collection).toHaveBeenCalled();
+
   });
 
 });
