@@ -213,7 +213,7 @@ describe('ChatroomService.addNewChatroom()', () => {
     expect(mockObject.then).toHaveBeenCalled();
   });
 
-  it('addNewChatroom() SHOULD return IF valid input ', () => {
+  it('addNewChatroom() SHOULD catch IF invalid input ', () => {
     mockObject = jasmine.createSpyObj(
       'MockReturnObject',
       ['doc', 'set']);
