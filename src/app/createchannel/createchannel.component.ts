@@ -1,6 +1,6 @@
-import { Component, OnInit, Inject } from '@angular/core';
+import { Component, OnInit, Inject, Optional } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { DialogData } from '../chatbox/chatbox.component';
+import { DialogData } from 'src/app/models/createchat.model';
 
 @Component({
   selector: 'app-createchannel',
@@ -11,8 +11,8 @@ export class CreateChannelComponent implements OnInit {
 
 
   constructor(
-    public dialogRef: MatDialogRef<CreateChannelComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: DialogData) {}
+    @Optional() public dialogRef: MatDialogRef<CreateChannelComponent>,
+    @Optional() @Inject(MAT_DIALOG_DATA) public data: DialogData) {}
 
     ngOnInit() {
    }

@@ -18,6 +18,7 @@ import { LoginComponent } from './login/login.component';
 import { environment } from '../environments/environment';
 import { HeaderComponent } from './header/header.component';
 import { CreateChannelComponent } from './createchannel/createchannel.component';
+import { MatDialogModule } from '@angular/material/dialog';
 
 const config = {
   apiKey: 'AIzaSyD-9drCjUDfcRit3vaqTkY_8PVZCOsfiiA',
@@ -41,6 +42,7 @@ const config = {
     BrowserModule,
     AppRoutingModule,
     BrowserAnimationsModule,
+    MatDialogModule,
     BrowserModule,
     AppRoutingModule,
     BrowserAnimationsModule,

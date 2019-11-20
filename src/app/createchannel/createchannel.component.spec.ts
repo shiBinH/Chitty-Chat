@@ -1,25 +1,65 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { CreatechannelComponent } from './createchannel.component';
+import { CreateChannelComponent } from './createchannel.component';
+import { NgModule } from '@angular/core';
+import { MatDialogModule, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { MaterialModule } from '../modules/material-module';
+import { BrowserModule } from '@angular/platform-browser';
+import { FormsModule } from '@angular/forms';
+import { ChatboxComponent } from '../chatbox/chatbox.component';
 
-describe('CreatechannelComponent', () => {
-  let component: CreatechannelComponent;
-  let fixture: ComponentFixture<CreatechannelComponent>;
+describe('CreateChannelComponent', () => {
+  let component: CreateChannelComponent;
+  let fixture: ComponentFixture<CreateChannelComponent>;
 
-  beforeEach(async(() => {
+  describe('CreateChannelComponent', () => {
+    const mockDialogRef = {
+      close: jasmine.createSpy('close')
+    };
+
+    beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ CreatechannelComponent ]
+      imports: [
+        MatDialogModule,
+        BrowserAnimationsModule,
+        MaterialModule,
+        BrowserModule,
+        BrowserAnimationsModule,
+        FormsModule,
+      ],
+      declarations: [ CreateChannelComponent, ChatboxComponent ],
+      providers: [
+        { provide: MatDialogRef,
+          usevalue: mockDialogRef },
+        { provide: MAT_DIALOG_DATA,
+          usevalue: { MatDialogModule }
+        }
+      ]
     })
     .compileComponents();
   }));
 
-  beforeEach(() => {
-    fixture = TestBed.createComponent(CreatechannelComponent);
+    beforeEach(() => {
+    fixture = TestBed.createComponent(CreateChannelComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
 
-  it('should create', () => {
+
+    beforeEach(() => {
+    fixture = TestBed.createComponent(CreateChannelComponent);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+  });
+
+    it('should create', () => {
     expect(component).toBeTruthy();
+    });
+
+    it('#onNoClick should close the dialog', () => {
+    component.onNoClick();
+    expect(mockDialogRef.close).toHaveBeenCalled();
+    });
   });
 });
