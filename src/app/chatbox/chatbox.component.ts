@@ -25,21 +25,6 @@ import { Chatuser } from '../models/chatuser.model';
 import { Subscription } from 'rxjs';
 import { CreateChannelComponent } from '../createchannel/createchannel.component';
 import { MatDialog, MAT_DIALOG_DATA } from '@angular/material/dialog';
-// import randomString from 'randomstring';
-
-// tslint:disable-next-line: one-variable-per-declaration
-// export const mockData1: DialogData {
-//   chatroomName: 'help',
-//   userID: '1234'
-// };
-
-// // tslint:disable-next-line: one-variable-per-declaration
-// export const mockData2: DialogData {
-//   chatroomName: 'convos',
-//   userID: '1'
-// };
-
-// export const mockUsers: DialogData[] = [ mockData1, mockData2 ];
 
 @Component({
   selector: 'app-chatbox',
@@ -266,5 +251,4 @@ export class ChatboxComponent implements OnInit {
       this.chatroomName = result;
     });
   }
-
 }

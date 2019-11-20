@@ -18,6 +18,11 @@ describe('CreateChannelComponent', () => {
       close: jasmine.createSpy('close')
     };
 
+    const mockData = {
+      chatroomName: 'mock name',
+      userID: 'mock user'
+    };
+
     beforeEach(async(() => {
     TestBed.configureTestingModule({
       imports: [
@@ -31,9 +36,9 @@ describe('CreateChannelComponent', () => {
       declarations: [ CreateChannelComponent, ChatboxComponent ],
       providers: [
         { provide: MatDialogRef,
-          usevalue: mockDialogRef },
+          useValue: mockDialogRef },
         { provide: MAT_DIALOG_DATA,
-          usevalue: { MatDialogModule }
+          useValue: { mockData }
         }
       ]
     })
