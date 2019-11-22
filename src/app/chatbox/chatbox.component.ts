@@ -64,6 +64,9 @@ export class ChatboxComponent implements OnInit {
   };
   conversations = [];
 
+  //  Stores all available chatrooms to the user
+  chatroomList = [];
+
   friendList = [
     // {
     //   id: 1,
@@ -243,12 +246,39 @@ export class ChatboxComponent implements OnInit {
   openDialog(): void {
     const dialogRef = this.dialog.open(CreateChannelComponent, {
       width: '2000px',
-      data: {userID: this.userID, chatroomName: this.chatroomName}
+      data: { userID: this.userID, chatroomName: this.chatroomName }
     });
 
     dialogRef.afterClosed().subscribe(result => {
       console.log('The dialog was closed');
       this.chatroomName = result;
+    });
+  }
+  getChatroomList(): Promise<void> {
+    return new Promise((resolve, reject) => {
+      const availableChatrooms = this.chatroomList;
+      this.userInfoService.getCurrentUserInfo(this.userInfo.uid).subscribe({
+        next(data: any) {
+          const chatroomRefs = data.payload.data().chatroomRefs;
+          if (chatroomRefs.length > 0) {
+            chatroomRefs.forEach((item, index, arr) => {
+              item.get().then(chatroom => {
+                const chatroomData = chatroom.data();
+                availableChatrooms.push({
+                  id: item.id,
+                  name: chatroomData.roomName
+                });
+
+                if (index === arr.length - 1) {
+                  resolve();
+                }
+              });
+            });
+          } else {
+            reject(new Error());
+          }
+        }
+      });
     });
   }
 }

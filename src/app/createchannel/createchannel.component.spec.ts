@@ -51,13 +51,6 @@ describe('CreateChannelComponent', () => {
     fixture.detectChanges();
   });
 
-
-    beforeEach(() => {
-    fixture = TestBed.createComponent(CreateChannelComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
-
     it('should create', () => {
     expect(component).toBeTruthy();
     });
