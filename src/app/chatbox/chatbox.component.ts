@@ -1,17 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { ChatService } from '../services/chat.service';
-// import { Observable } from 'rxjs/Observable';
-// import 'rxjs/add/observable/from';
-// import 'rxjs/add/operator/map';
-import * as moment from 'moment';
-import {
-  filter,
-  distinctUntilChanged,
-  skipWhile,
-  scan,
-  throttleTime,
-  switchMap
-} from 'rxjs/operators';
 import { AuthService } from '../services/auth.service';
 import { AngularFireAuth } from '@angular/fire/auth';
 import { MessageService } from '../services/message.service';
@@ -25,6 +13,7 @@ import { Chatuser } from '../models/chatuser.model';
 import { Subscription } from 'rxjs';
 import { CreateChannelComponent } from '../createchannel/createchannel.component';
 import { MatDialog, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-chatbox',
@@ -50,17 +39,7 @@ export class ChatboxComponent implements OnInit {
     'ji9ldKigbHxBadcZyb1E'
   ];
   selectedConversation = {
-    // this is designed this way because we might have multiple memeber in a conversation
-    members: [
-      {
-        userID: '1',
-        name: 'Random'
-      }
-    ],
-    me: {
-      id: 'ph84kj5XX2MHrCK30wqPhg10gRi1'
-    },
-    conversationID: 'UgQEVNxekZrld8UJqtkZ'
+    name: ''
   };
   conversations = [];
 
@@ -68,18 +47,6 @@ export class ChatboxComponent implements OnInit {
   chatroomList = [];
 
   friendList = [
-    // {
-    //   id: 1,
-    //   name: 'Luke'
-    // },
-    // {
-    //   id: 2,
-    //   name: 'John'
-    // },
-    // {
-    //   id: 3,
-    //   name: 'Alex'
-    // },
     {
       id: 'SyFrC5N7QlUNyia8aJWqWySdDFx1',
       name: 'Random'
@@ -117,35 +84,13 @@ export class ChatboxComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    // this.chatService
-    //   .getMessages()
-    //   .subscribe((message: string) => {
-    //     this.messages.push(message);
-    //     this.events.push({
-    //       from: '1',
-    //       type: 'text',
-    //       text: message
-    //     });
-    //   });
-
-    // this.chatRoomService
-    // .getUpdates(this.selectedChatRoomID)
-    // .subscribe((message: any) => {
-    //   console.log(message);
-    //   message.forEach((element: Chat) => {
-    //     this.events.push({
-    //     from: '1',
-    //     type: 'text',
-    //     text: element.content
-    //   });
-    //   });
-    // });
-    this.updateChatHistory();
-    // console.log(this.messages);
-
+    this.getChatroomList()
+      .then(() => {
+        if (this.chatroomList.length) {
+          this.openConversation(0);
+        }
+      });
     console.log(this.userInfo);
-    // this.getFriendList();
-    // this.getConversations();
   }
 
   updateChatHistory() {
@@ -180,10 +125,6 @@ export class ChatboxComponent implements OnInit {
           console.log(this.friendList);
         });
     });
-    console.log(this.friendListId);
-    this.userInfoService
-      .getCurrentUserInfo('ph84kj5XX2MHrCK30wqPhg10gRi1')
-      .subscribe(res => console.log(res.payload.data()));
   }
 
   getConversations() {
@@ -194,31 +135,16 @@ export class ChatboxComponent implements OnInit {
     const result = this.conversations.filter(
       conversation => conversation.id === id
     );
-    this.selectedConversation.members[0].name = result[0].display_name;
     this.openConversation(index);
   }
 
   openConversation(index: number) {
-    this.chatroomSubscription.unsubscribe();
-    this.selectedConversation.members[0].userID = this.friendList[index].id;
-    this.selectedConversation.members[0].name = this.friendList[index].name;
-    this.selectedChatRoomID = this.conversationsListId[index];
-    console.log(this.selectedChatRoomID);
-    this.updateChatHistory();
-    const friendIndex = this.conversations.findIndex(
-      item => item.id === this.friendList[index].id
-    );
-    if (friendIndex !== -1) {
-      return;
-    } else {
-      const conversation = {
-        id: this.friendList[index].id,
-        display_name: this.friendList[index].name,
-        chatRoomId: this.selectedChatRoomID
-      };
-      this.conversations.push(conversation);
-      console.log(conversation);
+    if (this.chatroomSubscription) {
+      this.chatroomSubscription.unsubscribe();
     }
+    this.selectedConversation.name = this.chatroomList[index].name;
+    this.selectedChatRoomID = this.chatroomList[index].id;
+    this.updateChatHistory();
   }
 
   deleteConversation(id: string) {
@@ -253,6 +179,35 @@ export class ChatboxComponent implements OnInit {
       console.log('The dialog was closed');
       this.chatroomName = result;
     });
+
+  //  Retrieves the user's chatrooms and stores them in this.chatroomList
+  getChatroomList(): Promise<void> {
+      return new Promise((resolve, reject) => {
+        const availableChatrooms = this.chatroomList;
+        this.userInfoService.getCurrentUserInfo(this.userInfo.uid)
+          .subscribe({
+            next(data: any) {
+              const chatroomRefs = data.payload.data().chatroomRefs;
+              if (chatroomRefs.length > 0) {
+                chatroomRefs.forEach((item, index, arr) => {
+                    item.get().then((chatroom) => {
+                      const chatroomData = chatroom.data();
+                      availableChatrooms.push({
+                        id: item.id,
+                        name: chatroomData.roomName
+                      });
+
+                      if (index === arr.length - 1) {
+                        resolve();
+                      }
+                    });
+                  });
+                } else {
+                  reject(new Error());
+                }
+            }
+        });
+      });
   }
   getChatroomList(): Promise<void> {
     return new Promise((resolve, reject) => {
