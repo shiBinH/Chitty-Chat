@@ -10,7 +10,6 @@ import { Chat } from '../models/chat.model';
 import { DialogData } from 'src/app/models/createchat.model';
 import { UserInfo } from 'firebase';
 import { Chatuser } from '../models/chatuser.model';
-import { Subscription } from 'rxjs';
 import { CreateChannelComponent } from '../createchannel/createchannel.component';
 import { MatDialog, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { Subscription } from 'rxjs';
@@ -81,7 +80,7 @@ export class ChatboxComponent implements OnInit {
     private messageService: MessageService,
     private userInfoService: UserInfoService,
     private chatRoomService: ChatroomService
-  ) {}
+  ) { }
 
   ngOnInit() {
     this.getChatroomList()
@@ -179,61 +178,35 @@ export class ChatboxComponent implements OnInit {
       console.log('The dialog was closed');
       this.chatroomName = result;
     });
+  }
 
   //  Retrieves the user's chatrooms and stores them in this.chatroomList
   getChatroomList(): Promise<void> {
-      return new Promise((resolve, reject) => {
-        const availableChatrooms = this.chatroomList;
-        this.userInfoService.getCurrentUserInfo(this.userInfo.uid)
-          .subscribe({
-            next(data: any) {
-              const chatroomRefs = data.payload.data().chatroomRefs;
-              if (chatroomRefs.length > 0) {
-                chatroomRefs.forEach((item, index, arr) => {
-                    item.get().then((chatroom) => {
-                      const chatroomData = chatroom.data();
-                      availableChatrooms.push({
-                        id: item.id,
-                        name: chatroomData.roomName
-                      });
-
-                      if (index === arr.length - 1) {
-                        resolve();
-                      }
-                    });
-                  });
-                } else {
-                  reject(new Error());
-                }
-            }
-        });
-      });
-  }
-  getChatroomList(): Promise<void> {
     return new Promise((resolve, reject) => {
       const availableChatrooms = this.chatroomList;
-      this.userInfoService.getCurrentUserInfo(this.userInfo.uid).subscribe({
-        next(data: any) {
-          const chatroomRefs = data.payload.data().chatroomRefs;
-          if (chatroomRefs.length > 0) {
-            chatroomRefs.forEach((item, index, arr) => {
-              item.get().then(chatroom => {
-                const chatroomData = chatroom.data();
-                availableChatrooms.push({
-                  id: item.id,
-                  name: chatroomData.roomName
-                });
+      this.userInfoService.getCurrentUserInfo(this.userInfo.uid)
+        .subscribe({
+          next(data: any) {
+            const chatroomRefs = data.payload.data().chatroomRefs;
+            if (chatroomRefs.length > 0) {
+              chatroomRefs.forEach((item, index, arr) => {
+                item.get().then((chatroom) => {
+                  const chatroomData = chatroom.data();
+                  availableChatrooms.push({
+                    id: item.id,
+                    name: chatroomData.roomName
+                  });
 
-                if (index === arr.length - 1) {
-                  resolve();
-                }
+                  if (index === arr.length - 1) {
+                    resolve();
+                  }
+                });
               });
-            });
-          } else {
-            reject(new Error());
+            } else {
+              reject(new Error());
+            }
           }
-        }
-      });
+        });
     });
   }
 }
