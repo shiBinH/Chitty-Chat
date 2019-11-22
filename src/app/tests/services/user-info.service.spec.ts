@@ -2,6 +2,8 @@ import { TestBed } from '@angular/core/testing';
 import { AngularFirestore } from '@angular/fire/firestore';
 import { UserInfoService } from '../../services/user-info.service';
 import { of } from 'rxjs';
+import { User } from 'src/app/models/user.model';
+import { UserNotFoundError } from 'src/app/models/UserNotFoundError';
 
 let service: UserInfoService;
 
@@ -96,4 +98,55 @@ describe('UserInfoService.getCurrentUserInfo()', () => {
     mockReturn.payload.id = 'modified id';
     expect(respond.payload.id).toEqual('modified id');
   });
+});
+
+describe('UserInfoService.getUserByEmail()', () => {
+  const USER_EMAIL = 'email';
+  const USER_INFO = {
+    uid: 'uid',
+    email: USER_EMAIL,
+    friendList: ['friend1', 'friend2'],
+    chatrooms: ['chatroomID1', 'chatroomID2']
+  };
+  const RESOLVED_PROMISE_WITH_USER_INFO = Promise.resolve([{
+    data(): User { return USER_INFO; }
+  }]);
+  const USER_NOT_FOUND_ERROR = new UserNotFoundError('Email not found');
+  const REJECTED_PROMISE_WITH_ERROR = Promise.reject(USER_NOT_FOUND_ERROR);
+
+  let serviceUnderTest: UserInfoService;
+  let mockObject: jasmine.SpyObj<any>;
+  let firestoreServiceSpy: jasmine.SpyObj<AngularFirestore>;
+
+  firestoreServiceSpy = jasmine.createSpyObj('FirestoreService', ['collection']);
+  mockObject = jasmine.createSpyObj('MockObject', ['ref', 'where', 'get']);
+
+  firestoreServiceSpy.collection.withArgs(jasmine.any(String)).and.returnValue(mockObject);
+  mockObject.ref = mockObject;
+  mockObject.where.withArgs(jasmine.any(String), jasmine.any(String), jasmine.any(String)).and.returnValue(mockObject);
+
+  beforeEach(() => {
+    TestBed.configureTestingModule({
+      providers: [
+          UserInfoService,
+          { provide: AngularFirestore, useValue: firestoreServiceSpy }
+        ],
+    });
+  });
+
+  it('calling getUserByEmail() SHOULD resolve IF email exists', () => {
+    mockObject.get.and.returnValue(RESOLVED_PROMISE_WITH_USER_INFO);
+    serviceUnderTest = TestBed.get(UserInfoService);
+    serviceUnderTest.getUserByEmail(USER_EMAIL).then((userInfo) => {
+      expect(userInfo).toEqual(USER_INFO);
+    });
+  });
+  it('calling getUserByEmail() SHOULD reject IF email does not exist', () => {
+    mockObject.get.and.returnValue(REJECTED_PROMISE_WITH_ERROR);
+    serviceUnderTest = TestBed.get(UserInfoService);
+    serviceUnderTest.getUserByEmail(USER_EMAIL).catch((e: UserNotFoundError) => {
+      expect(e).toEqual(USER_NOT_FOUND_ERROR);
+    });
+  });
+
 });
