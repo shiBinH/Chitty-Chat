@@ -24,7 +24,6 @@ export class AuthService {
             // Logged in
           if (user) {
             console.log( `users id is /${user.uid}`);
-            console.log(this.user$);
             return this.afs.doc<User>(`users/${user.uid}`).valueChanges();
           } else {
             // Logged out
@@ -40,7 +39,7 @@ export class AuthService {
       return this.updateUserData(credential.user);
     }
 
-    private updateUserData(user) {
+    public updateUserData(user) {
       // Sets user data to firestore on login
       const userRef: AngularFirestoreDocument<User> = this.afs.doc(`users/${user.uid}`);
 
