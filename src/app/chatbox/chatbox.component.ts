@@ -20,14 +20,9 @@ import {ToneAnalyzerService} from '../services/tone-analyzer.service';
   templateUrl: './chatbox.component.html',
   styleUrls: ['./chatbox.component.scss']
 })
-<<<<<<< HEAD
-export class ChatboxComponent implements OnInit, AfterViewChecked {
-  chatroomName: string;
-  userID: string;
-=======
-export class ChatboxComponent implements OnInit {
 
->>>>>>> fixes for PR #94
+export class ChatboxComponent implements OnInit, AfterViewChecked {
+
   @Input() userInfo: User;
   selectedChatRoomID = 'UgQEVNxekZrld8UJqtkZ';
   chatroomSubscription: Subscription;
