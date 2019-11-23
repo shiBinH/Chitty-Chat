@@ -2,6 +2,7 @@ import { TestBed } from '@angular/core/testing';
 import { AngularFirestore } from '@angular/fire/firestore';
 import { ChatroomService } from '../../services/chatroom.service';
 import { Observable } from 'rxjs';
+import { firestore } from 'firebase';
 
 describe('ChatroomService.getUpdates()', () => {
   const CHATROOM_ID = 'chatroomID';
@@ -62,8 +63,6 @@ describe('ChatroomService.getUpdates()', () => {
   }
 
 });
-
-
 
 describe('ChatroomService.getChatroomList()', () => {
 
@@ -143,7 +142,7 @@ describe('ChatroomService.getChatHistory()', () => {
     TestBed.configureTestingModule({
       providers: [
         ChatroomService,
-        { provide: AngularFirestore, useValue: firestoreServiceSpy}
+        { provide: AngularFirestore, useValue: firestoreServiceSpy},
       ]
     });
 
@@ -231,4 +230,55 @@ describe('ChatroomService.addNewChatroom()', () => {
 
   });
 
+});
+
+describe('ChatroomService.addUserToChatroom()', () => {
+  const USER_ID = 'userID';
+  const CHATROOM_ID = 'chatroomID';
+  const MEMBERS = ['userID1', 'userID2'];
+  const RESOVLED_PROMISE = Promise.resolve();
+
+  let serviceUnderTest: ChatroomService;
+  let firestoreServiceSpy: jasmine.SpyObj<any>;
+  let fieldValueSpy: jasmine.SpyObj<any>;
+  let mockObject: jasmine.SpyObj<any>;
+  let mockDocumentReference: jasmine.SpyObj<firestore.DocumentReference>;
+
+  beforeEach(() => {
+    mockDocumentReference = jasmine.createSpyObj('MockDocumentReference', ['']);
+
+    mockObject = jasmine.createSpyObj(
+      'MockReturnObject',
+      ['batch', 'update', 'commit']);
+    mockObject.batch.and.returnValue(mockObject);
+    mockObject.update.withArgs(jasmine.anything(), jasmine.anything()).and.returnValue(mockObject);
+    mockObject.commit.and.returnValue(RESOVLED_PROMISE);
+    mockObject.ref = mockDocumentReference;
+
+    firestoreServiceSpy = jasmine.createSpyObj('FirestoreService', ['doc']);
+    firestoreServiceSpy.doc.withArgs(jasmine.any(String)).and.returnValue(mockObject);
+    firestoreServiceSpy.firestore = mockObject;
+
+    fieldValueSpy = jasmine.createSpyObj('firebaseFirestoreFieldValue', ['arrayUnion']);
+    fieldValueSpy.arrayUnion.withArgs(jasmine.anything)
+      .and.returnValues(MEMBERS, [mockDocumentReference, mockDocumentReference]);
+
+    TestBed.configureTestingModule({
+      providers: [
+        ChatroomService,
+        { provide: AngularFirestore, useValue: firestoreServiceSpy},
+        { provide: firestore.FieldValue, useValue: fieldValueSpy }
+      ]
+    });
+
+  });
+
+  it('calling addUserToChatroom() should return IF valid input', () => {
+    serviceUnderTest = TestBed.get(ChatroomService);
+
+    const returnedPromise = serviceUnderTest.addUserToChatroom(USER_ID, CHATROOM_ID);
+
+    expect(returnedPromise).toEqual(returnedPromise);
+    expect(mockObject.update).toHaveBeenCalledTimes(2);
+  });
 });
