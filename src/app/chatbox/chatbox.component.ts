@@ -32,6 +32,17 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
   messages: string[] = [];
   toneWithHighestScore = 'none';
   secretCode = 'secret';
+  friendListId = [];
+  status: string;
+  roomname: string;
+  userList: string[];
+  ownerID: string;
+  conversationsListId = [
+    '05kbCceCnYxcfOxewCJK',
+    'UgQEVNxekZrld8UJqtkZ',
+    'e0cGp5IpWGb9AuC3iuM2',
+    'ji9ldKigbHxBadcZyb1E'
+  ];
   selectedConversation = {
     name: ''
   };
@@ -156,12 +167,16 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
   openDialog(): void {
     const dialogRef = this.dialog.open(CreateChannelComponent, {
       width: '2000px',
-      data: { userID: this.userID, chatroomName: this.chatroomName }
+      data: {
+        ownerID: this.userInfo.uid,
+        getChatroomList: this.getChatroomList.bind(this)
+      }
     });
 
     dialogRef.afterClosed().subscribe(result => {
       console.log('The dialog was closed');
-      this.chatroomName = result;
+      this.roomname = result;
+      console.log(result);
     });
   }
 
