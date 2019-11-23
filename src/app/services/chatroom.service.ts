@@ -54,7 +54,7 @@ export class ChatroomService {
       .catch(error => {
         return reject(error);
       });
-    })
+    });
   }
 
   public getUpdates(chatRoomID: string): Observable<any> {
