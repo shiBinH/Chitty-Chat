@@ -36,16 +36,25 @@ export class ChatroomService {
 
   // status can be public/private
   public addNewChatroom(status: string, roomName: string, userList: string[], ownerID: string): Promise<any> {
-    return this.db
+    return new Promise((resolve, reject) => {
+      const ROOMID = this.db.createId();
+      this.db
       .collection(`chatrooms`)
-      .doc(this.db.createId())
+      .doc(ROOMID)
       .set({
         status,
         members: userList,
         ownerID,
         when: new Date(),
         roomName
+      })
+      .then(() => {
+        return resolve(ROOMID);
+      })
+      .catch(error => {
+        return reject(error);
       });
+    });
   }
 
   public getUpdates(chatRoomID: string): Observable<any> {
