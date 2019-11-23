@@ -20,9 +20,14 @@ import {ToneAnalyzerService} from '../services/tone-analyzer.service';
   templateUrl: './chatbox.component.html',
   styleUrls: ['./chatbox.component.scss']
 })
+<<<<<<< HEAD
 export class ChatboxComponent implements OnInit, AfterViewChecked {
   chatroomName: string;
   userID: string;
+=======
+export class ChatboxComponent implements OnInit {
+
+>>>>>>> fixes for PR #94
   @Input() userInfo: User;
   selectedChatRoomID = 'UgQEVNxekZrld8UJqtkZ';
   chatroomSubscription: Subscription;
@@ -33,10 +38,8 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
   toneWithHighestScore = 'none';
   secretCode = 'secret';
   friendListId = [];
-  status: string;
-  roomname: string;
-  userList: string[];
-  ownerID: string;
+  roomName: string;
+
   conversationsListId = [
     '05kbCceCnYxcfOxewCJK',
     'UgQEVNxekZrld8UJqtkZ',
@@ -175,7 +178,7 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
 
     dialogRef.afterClosed().subscribe(result => {
       console.log('The dialog was closed');
-      this.roomname = result;
+      this.roomName = result;
       console.log(result);
     });
   }
