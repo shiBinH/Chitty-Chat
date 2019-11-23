@@ -30,13 +30,6 @@ export class ChatboxComponent implements OnInit {
   message = '';
   messages: string[] = [];
   secretCode = 'secret';
-  friendListId = [];
-  conversationsListId = [
-    '05kbCceCnYxcfOxewCJK',
-    'UgQEVNxekZrld8UJqtkZ',
-    'e0cGp5IpWGb9AuC3iuM2',
-    'ji9ldKigbHxBadcZyb1E'
-  ];
   selectedConversation = {
     name: ''
   };
@@ -44,21 +37,6 @@ export class ChatboxComponent implements OnInit {
 
   //  Stores all available chatrooms to the user
   chatroomList = [];
-
-  friendList = [
-    {
-      id: 'SyFrC5N7QlUNyia8aJWqWySdDFx1',
-      name: 'Random'
-    },
-    {
-      id: 'l9A3All48lZkGjNhnOkTfF0JREg1',
-      name: 'General'
-    },
-    {
-      id: 'yKoayuA5IIb32BUkKvYvWOk6xx13',
-      name: 'ChittyC'
-    }
-  ];
 
   events = [
     {
@@ -109,27 +87,6 @@ export class ChatboxComponent implements OnInit {
       });
   }
 
-  getFriendList() {
-    this.friendListId = this.userInfo ? this.userInfo.friendList : [];
-    console.log(this.friendList);
-    this.friendListId.forEach(friendID => {
-      this.userInfoService
-        .getCurrentUserInfo(friendID)
-        .subscribe((res: any) => {
-          console.log(res.payload.data());
-          this.friendList.push({
-            id: res.payload.data().uid,
-            name: res.payload.data().displayName.substring(0, 7)
-          });
-          console.log(this.friendList);
-        });
-    });
-  }
-
-  getConversations() {
-    this.conversationsListId = this.userInfo ? this.userInfo.chatrooms : [];
-  }
-
   selectConversation(id: string, index: number) {
     const result = this.conversations.filter(
       conversation => conversation.id === id
@@ -146,10 +103,6 @@ export class ChatboxComponent implements OnInit {
     this.updateChatHistory();
   }
 
-  deleteConversation(id: string) {
-    const deleteIndex = this.conversations.findIndex(item => item.id === id);
-    this.conversations.splice(deleteIndex, 1);
-  }
   sendMsgToFirebase(message: string) {
     const date = new Date();
     this.messageService.sendMessage(
@@ -180,33 +133,41 @@ export class ChatboxComponent implements OnInit {
     });
   }
 
-  //  Retrieves the user's chatrooms and stores them in this.chatroomList
+  /**
+   * @summary Updates the component's chatroomList property
+   *          with the user's chatrooms
+   * @returns A Promise that resolves if the component's
+   *          chatroomList property successfully updates
+   */
   getChatroomList(): Promise<void> {
-    return new Promise((resolve, reject) => {
-      const availableChatrooms = this.chatroomList;
-      this.userInfoService.getCurrentUserInfo(this.userInfo.uid)
-        .subscribe({
-          next(data: any) {
-            const chatroomRefs = data.payload.data().chatroomRefs;
+      return new Promise((resolve, reject) => {
+        this.chatroomList = [];
+        const availableChatrooms = this.chatroomList;
+
+        this.userInfoService.getUserByEmail(this.userInfo.email)
+          .then((userInfo) => {
+            const chatroomRefs = userInfo.chatroomRefs;
             if (chatroomRefs.length > 0) {
               chatroomRefs.forEach((item, index, arr) => {
-                item.get().then((chatroom) => {
-                  const chatroomData = chatroom.data();
-                  availableChatrooms.push({
-                    id: item.id,
-                    name: chatroomData.roomName
-                  });
+                  item.get().then((chatroom) => {
+                    const chatroomData = chatroom.data();
+                    availableChatrooms.push({
+                      id: item.id,
+                      name: chatroomData.roomName
+                    });
 
-                  if (index === arr.length - 1) {
-                    resolve();
-                  }
+                    if (index === arr.length - 1) {
+                      resolve();
+                    }
+                  });
                 });
-              });
-            } else {
-              reject(new Error());
-            }
-          }
-        });
-    });
+              } else {
+                reject(new Error('No user chatrooms found'));
+              }
+          })
+          .catch(() => {
+            reject(new Error('User not found'));
+          });
+      });
   }
 }

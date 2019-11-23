@@ -13,37 +13,33 @@ import { AngularFireAuth } from '@angular/fire/auth';
 import { AngularFirestoreModule, AngularFirestore } from '@angular/fire/firestore';
 import { RouterTestingModule } from '@angular/router/testing';
 import { UserInfoService } from '../services/user-info.service';
-import { Observable } from 'rxjs';
 
 describe('ChatboxComponent', () => {
   const CHATROOM1_ID = 'chatroomID1';
   const CHATROOM1_NAME = 'chatroomName1';
   const CHATROOM2_ID = 'chatroomID2';
   const CHATROOM2_NAME = 'chatroomName2';
-  const NON_EMPTY_USER_CHATROOM_OBSERVABLE: Observable<any> = new Observable((subscriber) => {
-    subscriber.next({
-      payload: {
-        data() {
-          return {
-            chatroomRefs: [
-              createChatroomDocumentRef(CHATROOM1_ID, CHATROOM1_NAME),
-              createChatroomDocumentRef(CHATROOM2_ID, CHATROOM2_NAME)]
-          };
-        }
+  const RESOLVED_PROMISE_WITH_CHATROOMS: Promise<any> = Promise.resolve({
+    payload: {
+      data() {
+        return {
+          chatroomRefs: [
+            createChatroomDocumentRef(CHATROOM1_ID, CHATROOM1_NAME),
+            createChatroomDocumentRef(CHATROOM2_ID, CHATROOM2_NAME)]
+        };
       }
-    });
+    }
   });
-  const EMPTY_USER_CHATROOM_OBSERVABLE: Observable<any> = new Observable((subscriber) => {
-    subscriber.next({
-      payload: {data() {return {chatroomRefs: []}; }}
-    });
+  const RESOLVED_PROMISE_WITH_NO_CHATROOMS: Promise<any> = Promise.resolve({
+    payload: {data() {return {chatroomRefs: []}; }}
   });
+  const REJECTED_PROMISE_EMAIL_NOT_FOUND: Promise<any> = Promise.reject();
 
   let componentUnderTest: ChatboxComponent;
   let fixture: ComponentFixture<ChatboxComponent>;
   let userInfoServiceSpy: jasmine.SpyObj<UserInfoService>;
 
-  userInfoServiceSpy = jasmine.createSpyObj('UserInfoService', ['getCurrentUserInfo']);
+  userInfoServiceSpy = jasmine.createSpyObj('UserInfoService', ['getUserByEmail']);
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -82,20 +78,29 @@ describe('ChatboxComponent', () => {
 
   it('calling getChatroomList() SHOULD retrieve chatroomList IF user has chatrooms', () => {
     userInfoServiceSpy
-      .getCurrentUserInfo.withArgs(jasmine.any(String))
-      .and.returnValue(NON_EMPTY_USER_CHATROOM_OBSERVABLE);
+      .getUserByEmail.withArgs(jasmine.any(String))
+      .and.returnValue(RESOLVED_PROMISE_WITH_CHATROOMS);
     componentUnderTest.getChatroomList().then(() => {
       expect(componentUnderTest.chatroomList)
         .toEqual([{id: CHATROOM1_ID, name: CHATROOM1_NAME}, {id: CHATROOM2_ID, name: CHATROOM2_NAME}]);
     }).catch();
   });
 
-  it('calling getChatroomList() SHOULD resolve IF user has no chatrooms', () => {
+  it('calling getChatroomList() SHOULD reject IF user has no chatrooms', () => {
     userInfoServiceSpy
-      .getCurrentUserInfo.withArgs(jasmine.any(String))
-      .and.returnValue(EMPTY_USER_CHATROOM_OBSERVABLE);
-    componentUnderTest.getChatroomList().catch((err) => {
-      expect(err).toEqual(jasmine.any(Error));
+      .getUserByEmail.withArgs(jasmine.any(String))
+      .and.returnValue(RESOLVED_PROMISE_WITH_NO_CHATROOMS);
+    componentUnderTest.getChatroomList().catch((e) => {
+      expect(e).toEqual(jasmine.any(Error));
+    });
+  });
+
+  it('calling getChatroomList() SHOULD reject IF email does not exist', () => {
+    userInfoServiceSpy
+      .getUserByEmail.withArgs(jasmine.any(String))
+      .and.returnValue(REJECTED_PROMISE_EMAIL_NOT_FOUND);
+    componentUnderTest.getChatroomList().catch((e) => {
+      expect(e).toEqual(jasmine.any(Error));
     });
   });
 
