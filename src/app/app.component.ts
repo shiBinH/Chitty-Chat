@@ -12,20 +12,11 @@ export class AppComponent implements OnInit {
   title = 'chitty-chat';
   message = '';
   messages: string[] = [];
-  constructor(db: AngularFirestore, private chatService: ChatService, public auth: AuthService) {}
+  constructor(db: AngularFirestore, public auth: AuthService) {}
 
   ngOnInit() {
-    this.chatService
-      .getMessages()
-      .subscribe((message: string) => {
-        this.messages.push(message);
-      });
-    console.log(this.messages);
+
   }
 
-  sendMessage() {
-    this.chatService.sendMessage(this.message);
-    this.message = '';
-  }
 
 }
