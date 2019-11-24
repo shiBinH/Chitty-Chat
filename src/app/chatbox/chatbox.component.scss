@@ -102,3 +102,17 @@ section .mat-list .mat-list-avatar{
     height: auto;
     min-height: 50px;
 }
+
+.messages {
+    word-break: break-word;
+    overflow: hidden;
+    display: flex;
+    align-items: flex-start;
+    padding: 3px 3px 0px 3px;
+    margin: 1px;
+    border: 1px solid;
+}
+
+.mat-list-cotent {
+    border: 1px solid;
+}

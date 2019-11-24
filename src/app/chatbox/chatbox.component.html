@@ -68,21 +68,27 @@
     <mat-list id="scrollMe" dense class="conversation-history mat-typography">
       <mat-list-item
       id="anchor"
-      [ngStyle]="{'word-break': 'break-word', 'overflow': 'hidden', 'display': 'flex', 'align-items': 'start'}"
+      
+      [ngStyle]="{'word-break': 'break-word', 'overflow': 'hidden', 'display': 'flex', 'align-items': 'flex-start'}"
         *ngFor="let event of events; index as i"
         [dir]="event.from === this.userInfo.uid ? 'rtl' : 'ltr'"
       >
+      <div class="messages">
+        <div [ngStyle]="{'display': 'flex', 'flex-direction': 'column', 'justify-content': 'center', 'align-items': 'center'}">
         <img
           *ngIf="event.type == 'text'"
           matListAvatar
           matTooltip="{{ event.from === this.userInfo.uid ?  userInfo.displayName : this.selectedConversation.name}}"
           src="https://randomuser.me/api/portraits/thumb/lego/{{ i % 10 }}.jpg"
         />
+        <div>&#9889;</div> <!-- placeholder for emoji-->
+        </div>
         <p *ngIf="event.type == 'text'" [dir]="'ltr'">{{ event.text }}</p>
         <p *ngIf="event.type == 'member:joined'" class="text-center">
           <!-- <b>{{ selectedConversation.members[event.from].name }}</b> -->
           has joined the conversation
         </p>
+      </div>
       </mat-list-item>
       <!-- <mat-list-item id="anchor">
         <p>message</p>
