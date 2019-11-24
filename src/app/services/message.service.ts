@@ -10,7 +10,7 @@ export class MessageService {
 
   public sendMessage(
     userID: string, when: Date, chatRoomID: string,
-    content: string, tone: string = 'angry'): Promise<any> {
+    content: string, tone: string = 'empty'): Promise<any> {
     console.log(`Sending message for userID: ${userID}, when: ${when},
                 chatRoomID: ${chatRoomID}, content: ${content}, emotion: ${tone}`);
 
