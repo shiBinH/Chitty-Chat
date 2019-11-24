@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, AfterViewInit, AfterViewChecked } from '@angular/core';
 import { ChatService } from '../services/chat.service';
 import { AuthService } from '../services/auth.service';
 import { AngularFireAuth } from '@angular/fire/auth';
@@ -19,7 +19,7 @@ import { Subscription } from 'rxjs';
   templateUrl: './chatbox.component.html',
   styleUrls: ['./chatbox.component.scss']
 })
-export class ChatboxComponent implements OnInit {
+export class ChatboxComponent implements OnInit, AfterViewChecked {
   chatroomName: string;
   userID: string;
   @Input() userInfo: User;
@@ -70,6 +70,12 @@ export class ChatboxComponent implements OnInit {
     console.log(this.userInfo);
   }
 
+  ngAfterViewChecked(): void {
+    // Called after ngAfterContentInit when the component's view has been initialized. Applies to components only.
+    // Add 'implements AfterViewInit' to the class.
+    this.scrollBottom();
+  }
+
   updateChatHistory() {
     this.events = [];
     this.chatroomSubscription = this.chatRoomService
@@ -117,9 +123,11 @@ export class ChatboxComponent implements OnInit {
     if (this.message !== '') {
       this.sendMsgToFirebase(message);
       this.message = '';
-      const objDiv = document.getElementById('content');
-      objDiv.scrollTop = objDiv.scrollHeight;
     }
+  }
+
+  scrollBottom() {
+    document.getElementById('scrollMe').scrollBy(0, 50000000);
   }
   openDialog(): void {
     const dialogRef = this.dialog.open(CreateChannelComponent, {
