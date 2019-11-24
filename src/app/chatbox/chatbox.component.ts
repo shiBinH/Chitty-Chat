@@ -13,7 +13,7 @@ import { Chatuser } from '../models/chatuser.model';
 import { CreateChannelComponent } from '../createchannel/createchannel.component';
 import { MatDialog, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { Subscription } from 'rxjs';
-import {ToneAnalyzerService} from '../services/tone-analyzer.service'
+import {ToneAnalyzerService} from '../services/tone-analyzer.service';
 
 @Component({
   selector: 'app-chatbox',
@@ -60,7 +60,7 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
     private messageService: MessageService,
     private userInfoService: UserInfoService,
     private chatRoomService: ChatroomService,
-    private toneAnalyzerService : ToneAnalyzerService
+    private toneAnalyzerService: ToneAnalyzerService
   ) { }
 
   ngOnInit() {
@@ -124,7 +124,7 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
     this.updateToneInFirebase(this.selectedChatRoomID, localStorage.getItem('chatID'), message);
   }
 
-  updateToneInFirebase(chatRoomID : string, chatID : string, message: string) {
+  updateToneInFirebase(chatRoomID: string, chatID: string, message: string) {
     this.toneAnalyzerService.toneAnalyze(message).subscribe((res: any) => {
       let highestScore = 0.0;
       // console.log('============== Tone Analyzer response ================');
@@ -139,8 +139,8 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
           }
         }
       }
-      console.log('selected tone : ',this.toneWithHighestScore);
-      this.messageService.updateChatTone(this.selectedChatRoomID, chatID,this.toneWithHighestScore);
+      console.log('selected tone : ', this.toneWithHighestScore);
+      this.messageService.updateChatTone(chatRoomID, chatID, this.toneWithHighestScore);
 
     });
   }
