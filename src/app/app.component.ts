@@ -1,5 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import { ChatService } from './services/chat.service';
 import { AuthService } from './services/auth.service';
 import { AngularFirestore } from '@angular/fire/firestore';
 
