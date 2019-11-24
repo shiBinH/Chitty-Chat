@@ -151,10 +151,10 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
       return new Promise((resolve, reject) => {
         this.chatroomList = [];
         const availableChatrooms = this.chatroomList;
-
+        console.log(this.userInfo);
         this.userInfoService.getUserByEmail(this.userInfo.email)
-          .then((userInfo) => {
-            const chatroomRefs = userInfo.chatroomRefs;
+          .then((userInfos) => {
+            const chatroomRefs = userInfos.chatroomRefs;
             if (chatroomRefs.length > 0) {
               chatroomRefs.forEach((item, index, arr) => {
                   item.get().then((chatroom) => {
