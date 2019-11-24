@@ -62,7 +62,6 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
     }
   ];
   constructor(
-    private chatService: ChatService,
     public auth: AuthService,
     public dialog: MatDialog,
     private afAuth: AngularFireAuth,
