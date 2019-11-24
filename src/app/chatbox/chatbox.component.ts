@@ -121,16 +121,13 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
       message
     )
     .then((chatID) => {
-      this.updateToneInFirebase(this.selectedChatRoomID, localStorage.getItem('chatID'), message);
+      this.updateToneInFirebase(this.selectedChatRoomID, chatID, message);
     });
   }
 
   updateToneInFirebase(chatRoomID: string, chatID: string, message: string) {
     this.toneAnalyzerService.toneAnalyze(message).subscribe((res: any) => {
       let highestScore = 0.0;
-      // console.log('============== Tone Analyzer response ================');
-      // console.log(res);
-      // console.log('============== Tone Analyzer response ================');
       if (Object.keys(res.tones).length > 0) {
         for (let i = 0; i < Object.keys(res).length; i++) {
           const obj = res.tones[i];

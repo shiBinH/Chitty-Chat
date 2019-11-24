@@ -16,7 +16,6 @@ export class MessageService {
 
     return new Promise((resolve, reject) => {
       const chatID = this.db.createId();
-      localStorage.setItem('chatID', chatID);
       this.db
         .collection(`chatrooms/${chatRoomID}/chats`)
         .doc(chatID)
@@ -27,7 +26,6 @@ export class MessageService {
           when
       })
       .then(() => {
-        // console.log('Message sent successfully!', chatID);
         return resolve(chatID);
       })
       .catch(error => {
