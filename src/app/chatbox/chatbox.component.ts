@@ -13,6 +13,7 @@ import { Chatuser } from '../models/chatuser.model';
 import { CreateChannelComponent } from '../createchannel/createchannel.component';
 import { MatDialog, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { Subscription } from 'rxjs';
+import {ToneAnalyzerService} from '../services/tone-analyzer.service';
 
 @Component({
   selector: 'app-chatbox',
@@ -29,6 +30,7 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
   text: string;
   message = '';
   messages: string[] = [];
+  toneWithHighestScore = 'none';
   secretCode = 'secret';
   selectedConversation = {
     name: ''
@@ -57,7 +59,8 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
     private afAuth: AngularFireAuth,
     private messageService: MessageService,
     private userInfoService: UserInfoService,
-    private chatRoomService: ChatroomService
+    private chatRoomService: ChatroomService,
+    private toneAnalyzerService: ToneAnalyzerService
   ) { }
 
   ngOnInit() {
@@ -116,7 +119,28 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
       date,
       this.selectedChatRoomID,
       message
-    );
+    )
+    .then((chatID) => {
+      this.updateToneInFirebase(this.selectedChatRoomID, chatID, message);
+    });
+  }
+
+  updateToneInFirebase(chatRoomID: string, chatID: string, message: string) {
+    this.toneAnalyzerService.toneAnalyze(message).subscribe((res: any) => {
+      let highestScore = 0.0;
+      if (Object.keys(res.tones).length > 0) {
+        for (let i = 0; i < Object.keys(res).length; i++) {
+          const obj = res.tones[i];
+          if (obj.score > highestScore) {
+            this.toneWithHighestScore = obj.tone_id;
+            highestScore = obj.score;
+          }
+        }
+      }
+      console.log('selected tone : ', this.toneWithHighestScore);
+      this.messageService.updateChatTone(chatRoomID, chatID, this.toneWithHighestScore);
+
+    });
   }
 
   sendMessage(message: string) {
@@ -179,3 +203,4 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
       });
   }
 }
+

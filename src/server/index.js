@@ -1,12 +1,18 @@
-let express = require('express')
-let path = require('path');
-let http = require('http');
-let socketIO = require('socket.io');
+const express = require('express'),
+  path = require('path'),
+  http = require('http'),
+  socketIO = require('socket.io'),
+  bodyParser = require('body-parser'),
+  cors = require('cors');
 
-let app = express();
-let server = http.Server(app);
-let io = socketIO(server);
+const toneRoute = require('./routes/tone.route');
 
+const app = express();
+const server = http.Server(app);
+const io = socketIO(server);
+app.use(bodyParser.json());
+app.use(cors());
+app.use('/api', toneRoute);
 const port = process.env.PORT || 3000;
 app.use(express.static(path.join(__dirname, '../../dist/chitty-chat/')))
 
