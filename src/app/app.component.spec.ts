@@ -13,7 +13,7 @@ import { AngularFirestore } from '@angular/fire/firestore';
 import { environment } from 'src/environments/environment';
 import { AngularFireModule } from '@angular/fire';
 import { HeaderComponent } from './header/header.component';
-
+import { AuthService } from './services/auth.service';
 
 describe('AppComponent', () => {
   beforeEach(async(() => {
@@ -34,7 +34,7 @@ describe('AppComponent', () => {
         ChatboxComponent,
         HeaderComponent
       ],
-      providers: [AngularFireAuth, AngularFirestore]
+      providers: [AngularFireAuth, AngularFirestore, AuthService]
     }).compileComponents();
   }));
 
@@ -50,10 +50,24 @@ describe('AppComponent', () => {
     expect(app.title).toEqual('chitty-chat');
   });
 
-  // it('should render title in a h1 tag', () => {
-  //   const fixture = TestBed.createComponent(AppComponent);
-  //   fixture.detectChanges();
-  //   const compiled = fixture.debugElement.nativeElement;
-  //   expect(compiled.querySelector('h1').textContent).toContain('Welcome to chitty-chat!');
-  // });
+  it('should render welcome message in a mat-card-header tag', () => {
+    const fixture = TestBed.createComponent(AppComponent);
+    fixture.detectChanges();
+    const compiled = fixture.debugElement.nativeElement;
+    expect(compiled.querySelector('mat-card-header').textContent).toContain('Welcome to Chitty Chat!');
+  });
+
+  it('should render a google signin button', () => {
+    const fixture = TestBed.createComponent(AppComponent);
+    fixture.detectChanges();
+    const compiled = fixture.debugElement.nativeElement;
+    const signInButton = compiled.querySelector('button');
+    expect(signInButton.textContent).toContain('Login with Google');
+
+    const authService: AuthService = TestBed.get(AuthService);
+    spyOn(authService, 'googleSignin');
+    signInButton.click();
+    expect(authService.googleSignin).toHaveBeenCalled();
+  });
+
 });
