@@ -97,3 +97,8 @@ section .mat-list .mat-list-avatar{
     /* anchor nodes are required to have non-zero area */
     // height: 30px;
 }
+
+#scrollMe .mat-list-item {
+    height: auto;
+    min-height: 50px;
+}

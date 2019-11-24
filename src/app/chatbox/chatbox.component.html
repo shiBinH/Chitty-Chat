@@ -68,7 +68,7 @@
     <mat-list id="scrollMe" dense class="conversation-history mat-typography">
       <mat-list-item
       id="anchor"
-      [ngStyle]="{'word-break': 'break-word', 'overflow': 'hidden'}"
+      [ngStyle]="{'word-break': 'break-word', 'overflow': 'hidden', 'display': 'flex', 'align-items': 'start'}"
         *ngFor="let event of events; index as i"
         [dir]="event.from === this.userInfo.uid ? 'rtl' : 'ltr'"
       >
