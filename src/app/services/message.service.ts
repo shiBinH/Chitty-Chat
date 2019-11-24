@@ -13,9 +13,11 @@ export class MessageService {
     content: string, tone: string = 'angry'): void {
     console.log(`Sending message for userID: ${userID}, when: ${when},
                 chatRoomID: ${chatRoomID}, content: ${content}, emotion: ${tone}`);
+    const chatID = this.db.createId();
+    localStorage.setItem('chatID', chatID);
     this.db
       .collection(`chatrooms/${chatRoomID}/chats`)
-      .doc(this.db.createId())
+      .doc(chatID)
       .set({
         content,
         emotion: tone,
@@ -27,5 +29,7 @@ export class MessageService {
         console.log('Message successfully sent!');
       });
   }
+
+
 
 }
