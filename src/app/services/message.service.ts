@@ -10,24 +10,30 @@ export class MessageService {
 
   public sendMessage(
     userID: string, when: Date, chatRoomID: string,
-    content: string, tone: string = 'angry'): void {
+    content: string, tone: string = 'angry'): Promise<any> {
     console.log(`Sending message for userID: ${userID}, when: ${when},
                 chatRoomID: ${chatRoomID}, content: ${content}, emotion: ${tone}`);
-    const chatID = this.db.createId();
-    localStorage.setItem('chatID', chatID);
-    this.db
-      .collection(`chatrooms/${chatRoomID}/chats`)
-      .doc(chatID)
-      .set({
-        content,
-        emotion: tone,
-        tone_id: tone,
-        user: userID,
-        when
+
+    return new Promise((resolve, reject) => {
+      const chatID = this.db.createId();
+      localStorage.setItem('chatID', chatID);
+      this.db
+        .collection(`chatrooms/${chatRoomID}/chats`)
+        .doc(chatID)
+        .set({
+          content,
+          tone_id: tone,
+          user: userID,
+          when
       })
-      .then((data) => {
-        console.log('Message successfully sent!');
+      .then(() => {
+        // console.log('Message sent successfully!', chatID);
+        return resolve(chatID);
+      })
+      .catch(error => {
+        return reject(error);
       });
+    });
   }
 
   public updateChatTone(

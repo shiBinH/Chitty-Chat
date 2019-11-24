@@ -119,9 +119,10 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
       date,
       this.selectedChatRoomID,
       message
-    );
-
-    this.updateToneInFirebase(this.selectedChatRoomID, localStorage.getItem('chatID'), message);
+    )
+    .then((chatID) => {
+      this.updateToneInFirebase(this.selectedChatRoomID, localStorage.getItem('chatID'), message);
+    });
   }
 
   updateToneInFirebase(chatRoomID: string, chatID: string, message: string) {
@@ -205,3 +206,4 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
       });
   }
 }
+
