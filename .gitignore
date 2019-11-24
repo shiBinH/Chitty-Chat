@@ -47,3 +47,5 @@ Thumbs.db
 
 # Server Nodemodule
 /src/server/node_modules
+
+.vscode/launch.json

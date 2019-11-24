@@ -4,7 +4,7 @@ export interface User {
     photoURL?: string;
     displayName?: string;
     myCustomData?: string;
-    friendList: string[];
-    chatrooms: string[];
+    friendList?: string[];
+    chatrooms?: string[];
     chatroomsRef?: string[];
 }
