@@ -65,8 +65,9 @@
     </div>
 
     <mat-divider></mat-divider>
-    <mat-list #scrollMe dense class="conversation-history mat-typography">
+    <mat-list id="scrollMe" dense class="conversation-history mat-typography">
       <mat-list-item
+      id="anchor"
       [ngStyle]="{'word-break': 'break-word', 'overflow': 'hidden'}"
         *ngFor="let event of events; index as i"
         [dir]="event.from === this.userInfo.uid ? 'rtl' : 'ltr'"
@@ -83,9 +84,9 @@
           has joined the conversation
         </p>
       </mat-list-item>
-      <mat-list-item *ngFor="let message of messages">{{
-        message
-      }}</mat-list-item>
+      <!-- <mat-list-item id="anchor">
+        <p>message</p>
+      </mat-list-item> -->
     </mat-list>
 
     <div class="conversation-input">
