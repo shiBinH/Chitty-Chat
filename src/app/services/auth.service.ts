@@ -4,7 +4,7 @@ import { User } from '../models/user.model';
 
 import { auth } from 'firebase/app';
 import { AngularFireAuth } from '@angular/fire/auth';
-import { AngularFirestore, AngularFirestoreDocument } from '@angular/fire/firestore';
+import { AngularFirestore, AngularFirestoreDocument, DocumentReference } from '@angular/fire/firestore';
 
 import { Observable, of } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
@@ -42,19 +42,14 @@ export class AuthService {
     public updateUserData(user) {
       // Sets user data to firestore on login
       const userRef: AngularFirestoreDocument<User> = this.afs.doc(`users/${user.uid}`);
-      const chatroom1: any = this.afs.doc(`chatrooms/e0cGp5IpWGb9AuC3iuM2`).ref;
-      const chatroom2: any = this.afs.doc(`chatrooms/UgQEVNxekZrld8UJqtkZ`).ref;
-      const chatroom3: any = this.afs.doc(`chatrooms/05kbCceCnYxcfOxewCJK`).ref;
+      const chatroom1: DocumentReference = this.afs.doc(`chatrooms/e0cGp5IpWGb9AuC3iuM2`).ref;
+      const chatroom2: DocumentReference = this.afs.doc(`chatrooms/UgQEVNxekZrld8UJqtkZ`).ref;
+      const chatroom3: DocumentReference = this.afs.doc(`chatrooms/05kbCceCnYxcfOxewCJK`).ref;
       const data = {
         uid: user.uid,
         email: user.email,
         displayName: user.displayName,
         photoURL: user.photoURL,
-        friendList: ['ph84kj5XX2MHrCK30wqPhg10gRi1'],
-        chatrooms: ['e0cGp5IpWGb9AuC3iuM2',
-                    'ji9ldKigbHxBadcZyb1E',
-                    'UgQEVNxekZrld8UJqtkZ',
-                    '05kbCceCnYxcfOxewCJK'],
         chatroomRefs: [chatroom1, chatroom2, chatroom3]
       };
 
