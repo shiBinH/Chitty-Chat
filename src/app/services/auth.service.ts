@@ -43,7 +43,7 @@ export class AuthService {
       // Sets user data to firestore on login
       const userRef: AngularFirestoreDocument<User> = this.afs.doc(`users/${user.uid}`);
       const chatroom1: any = this.afs.doc(`chatrooms/e0cGp5IpWGb9AuC3iuM2`).ref;
-      const chatroom2: any = this.afs.doc(`chatrooms/ji9ldKigbHxBadcZyb1E`).ref;
+      const chatroom2: any = this.afs.doc(`chatrooms/UgQEVNxekZrld8UJqtkZ`).ref;
       const chatroom3: any = this.afs.doc(`chatrooms/05kbCceCnYxcfOxewCJK`).ref;
       const data = {
         uid: user.uid,
