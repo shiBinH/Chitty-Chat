@@ -20,18 +20,12 @@ describe('ChatboxComponent', () => {
   const CHATROOM2_ID = 'chatroomID2';
   const CHATROOM2_NAME = 'chatroomName2';
   const RESOLVED_PROMISE_WITH_CHATROOMS: Promise<any> = Promise.resolve({
-    payload: {
-      data() {
-        return {
-          chatroomRefs: [
-            createChatroomDocumentRef(CHATROOM1_ID, CHATROOM1_NAME),
-            createChatroomDocumentRef(CHATROOM2_ID, CHATROOM2_NAME)]
-        };
-      }
-    }
+    chatroomRefs: [
+      createChatroomDocumentRef(CHATROOM1_ID, CHATROOM1_NAME),
+      createChatroomDocumentRef(CHATROOM2_ID, CHATROOM2_NAME)]
   });
   const RESOLVED_PROMISE_WITH_NO_CHATROOMS: Promise<any> = Promise.resolve({
-    payload: {data() {return {chatroomRefs: []}; }}
+    chatroomRefs: []
   });
   const REJECTED_PROMISE_EMAIL_NOT_FOUND: Promise<any> = Promise.reject();
 
@@ -61,6 +55,9 @@ describe('ChatboxComponent', () => {
   }));
 
   beforeEach(() => {
+    TestBed.get(UserInfoService)
+      .getUserByEmail.withArgs(jasmine.any(String))
+      .and.returnValue(RESOLVED_PROMISE_WITH_CHATROOMS);
     fixture = TestBed.createComponent(ChatboxComponent);
     componentUnderTest = fixture.componentInstance;
     componentUnderTest.userInfo = {
@@ -73,34 +70,40 @@ describe('ChatboxComponent', () => {
   });
 
   it('should create', () => {
-    expect(componentUnderTest).toBeTruthy();
+    TestBed.get(UserInfoService)
+      .getUserByEmail.withArgs(jasmine.any(String))
+      .and.returnValue(RESOLVED_PROMISE_WITH_CHATROOMS);
+    componentUnderTest.ngOnInit();
   });
 
   it('calling getChatroomList() SHOULD retrieve chatroomList IF user has chatrooms', () => {
-    userInfoServiceSpy
+    TestBed.get(UserInfoService)
       .getUserByEmail.withArgs(jasmine.any(String))
       .and.returnValue(RESOLVED_PROMISE_WITH_CHATROOMS);
     componentUnderTest.getChatroomList().then(() => {
       expect(componentUnderTest.chatroomList)
         .toEqual([{id: CHATROOM1_ID, name: CHATROOM1_NAME}, {id: CHATROOM2_ID, name: CHATROOM2_NAME}]);
+
     }).catch();
   });
 
   it('calling getChatroomList() SHOULD reject IF user has no chatrooms', () => {
-    userInfoServiceSpy
+    TestBed.get(UserInfoService)
       .getUserByEmail.withArgs(jasmine.any(String))
       .and.returnValue(RESOLVED_PROMISE_WITH_NO_CHATROOMS);
     componentUnderTest.getChatroomList().catch((e) => {
       expect(e).toEqual(jasmine.any(Error));
+
     });
   });
 
   it('calling getChatroomList() SHOULD reject IF email does not exist', () => {
-    userInfoServiceSpy
+    TestBed.get(UserInfoService)
       .getUserByEmail.withArgs(jasmine.any(String))
       .and.returnValue(REJECTED_PROMISE_EMAIL_NOT_FOUND);
     componentUnderTest.getChatroomList().catch((e) => {
       expect(e).toEqual(jasmine.any(Error));
+
     });
   });
 
