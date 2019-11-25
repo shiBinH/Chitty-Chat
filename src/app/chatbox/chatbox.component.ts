@@ -13,15 +13,16 @@ import { Chatuser } from '../models/chatuser.model';
 import { CreateChannelComponent } from '../createchannel/createchannel.component';
 import { MatDialog, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { Subscription } from 'rxjs';
+import {ToneAnalyzerService} from '../services/tone-analyzer.service';
 
 @Component({
   selector: 'app-chatbox',
   templateUrl: './chatbox.component.html',
   styleUrls: ['./chatbox.component.scss']
 })
+
 export class ChatboxComponent implements OnInit, AfterViewChecked {
-  chatroomName: string;
-  userID: string;
+
   @Input() userInfo: User;
   selectedChatRoomID = 'UgQEVNxekZrld8UJqtkZ';
   chatroomSubscription: Subscription;
@@ -29,7 +30,17 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
   text: string;
   message = '';
   messages: string[] = [];
+  toneWithHighestScore = 'none';
   secretCode = 'secret';
+  friendListId = [];
+  roomName: string;
+
+  conversationsListId = [
+    '05kbCceCnYxcfOxewCJK',
+    'UgQEVNxekZrld8UJqtkZ',
+    'e0cGp5IpWGb9AuC3iuM2',
+    'ji9ldKigbHxBadcZyb1E'
+  ];
   selectedConversation = {
     name: ''
   };
@@ -56,7 +67,8 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
     private afAuth: AngularFireAuth,
     private messageService: MessageService,
     private userInfoService: UserInfoService,
-    private chatRoomService: ChatroomService
+    private chatRoomService: ChatroomService,
+    private toneAnalyzerService: ToneAnalyzerService
   ) { }
 
   ngOnInit() {
@@ -115,7 +127,28 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
       date,
       this.selectedChatRoomID,
       message
-    );
+    )
+    .then((chatID) => {
+      this.updateToneInFirebase(this.selectedChatRoomID, chatID, message);
+    });
+  }
+
+  updateToneInFirebase(chatRoomID: string, chatID: string, message: string) {
+    this.toneAnalyzerService.toneAnalyze(message).subscribe((res: any) => {
+      let highestScore = 0.0;
+      if (Object.keys(res.tones).length > 0) {
+        for (let i = 0; i < Object.keys(res).length; i++) {
+          const obj = res.tones[i];
+          if (obj.score > highestScore) {
+            this.toneWithHighestScore = obj.tone_id;
+            highestScore = obj.score;
+          }
+        }
+      }
+      console.log('selected tone : ', this.toneWithHighestScore);
+      this.messageService.updateChatTone(chatRoomID, chatID, this.toneWithHighestScore);
+
+    });
   }
 
   sendMessage(message: string) {
@@ -131,12 +164,16 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
   openDialog(): void {
     const dialogRef = this.dialog.open(CreateChannelComponent, {
       width: '2000px',
-      data: { userID: this.userID, chatroomName: this.chatroomName }
+      data: {
+        ownerID: this.userInfo.uid,
+        getChatroomList: this.getChatroomList.bind(this)
+      }
     });
 
     dialogRef.afterClosed().subscribe(result => {
       console.log('The dialog was closed');
-      this.chatroomName = result;
+      this.roomName = result;
+      console.log(result);
     });
   }
 
@@ -177,3 +214,4 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
       });
   }
 }
+

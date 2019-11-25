@@ -2,6 +2,7 @@ version: 2.1
 orbs:
   aws-ecr: circleci/aws-ecr@6.5.0
   aws-ecs: circleci/aws-ecs@0.0.22
+  aws-cli: circleci/aws-cli@0.1.16
 
 jobs:
   build:
@@ -47,13 +48,55 @@ jobs:
           key: v1-dist-{{ .Environment.CIRCLE_BRANCH }}-{{ .Environment.CIRCLE_SHA1 }}
           paths:
             - dist
-            
+  build2:
+    working_directory: ~/Chitty-Chat
+    docker:
+        - image: circleci/node:10-browsers
+    executor: aws-cli/default
+    steps:
+        - checkout
+        
+        #8. builds the documentation folder for the deploy job 
+        - run:    
+            name: Building documentation
+            command: npm run compodoc
+        #8. Cache the documentation folder for the deploy job 
+        - save_cache:
+            key: v1-documentation-{{ .Environment.CIRCLE_BRANCH }}-{{ .Environment.CIRCLE_SHA1 }}
+            paths:
+                - documentation
+        #d.1. Log the current branch
+        - run:    
+            name: Show current branch    
+            command: echo ${CIRCLE_BRANCH}
+        #d.2. Restore cache from the build job which contains the
+        # documentation folder that needs to be deployed
+        - restore_cache:    
+            key: v1-documentation-{{ .Environment.CIRCLE_BRANCH }}-{{ .Environment.CIRCLE_SHA1 }}
+        #d.3. Install AWS cli
+        - run:    
+            name: Install aws cli    
+            command: sudo apt-get -y -qq install awscli
+
+        #this calls the installation of AWS cli in a
+        #different way, which will stop
+        - aws-cli/setup:
+            profile-name: kawyua
+        #d.4 Set the signature version for the S3 auth. 
+        - run:    
+            name: Setting Signature Version 4 for S3 Request Authentication    
+            command: aws configure set default.s3.signature_version s3v4
+        # Deploy to the S3 bucket corresponding to the current branch. all the files need to be out of any folders
+        - run:    
+            name: Deploy to S3    
+            command: aws --region us-east-2 s3 sync documentation/ s3://chittychatbucket/ --delete
 
 workflows:
   version: 2.1
   build-and-deploy:
     jobs:
       - build
+      
       # build docker image and push to ecr
       - aws-ecr/build-and-push-image:
           requires:
@@ -79,3 +122,8 @@ workflows:
           family: 'chitty-chat'
           cluster-name: 'chitty-chat-cluster'
           container-image-name-updates: 'container=chitty-chat,tag=latest'
+
+      - build2:
+          requires:
+            - aws-ecs/deploy-service-update
+          context: chittychat-aws-cloud-credentials

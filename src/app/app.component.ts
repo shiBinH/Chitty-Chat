@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { AuthService } from './services/auth.service';
-import { AngularFirestore } from '@angular/fire/firestore';
 
 @Component({
   selector: 'app-root',
@@ -9,13 +8,22 @@ import { AngularFirestore } from '@angular/fire/firestore';
 })
 export class AppComponent implements OnInit {
   title = 'chitty-chat';
-  message = '';
-  messages: string[] = [];
-  constructor(db: AngularFirestore, public auth: AuthService) {}
+  // message = '';
+  // messages: string[] = [];
+  constructor(public auth: AuthService) {}
 
   ngOnInit() {
-
+    // this.chatService
+    //   .getMessages()
+    //   .subscribe((message: string) => {
+    //     this.messages.push(message);
+    //   });
+    // console.log(this.messages);
   }
 
+  // sendMessage() {
+  //   this.chatService.sendMessage(this.message);
+  //   this.message = '';
+  // }
 
 }
