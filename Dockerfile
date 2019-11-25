@@ -4,6 +4,6 @@ COPY package.json .
 RUN npm install
 COPY . .
 RUN cd src/server && npm install
-RUN cd ~/Chitty-Chat
+RUN cd ../..
 RUN npm run-script build
 CMD [ "npm", "start" ]
