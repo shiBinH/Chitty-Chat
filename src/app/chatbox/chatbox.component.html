@@ -6,7 +6,15 @@
           <ng-template mat-tab-label>
             <mat-icon matListIcon>forum</mat-icon>
           </ng-template>
+            <!-- left side conversation list-->
           <mat-list class="conversations">
+            <mat-list-item *ngIf="chatroomList.length === 0">Loading...</mat-list-item>
+            <mat-list-item
+              *ngFor="let friend of chatroomList; let i = index"
+              (click)="openConversation(i)"
+            >
+              <p>{{ friend.name }}</p>
+            </mat-list-item>
             <!-- <mat-list-item
               *ngFor="let conversation of conversations; let i = index;"
               (click)="selectConversation(conversation.id, i)"
@@ -37,14 +45,35 @@
   </mat-sidenav>
   <mat-sidenav position="end" mode="side" opened *ngIf="selectedConversation">
     <mat-card>
+      <!-- right side conversation list-->
       <mat-list class="conversations">
-        <mat-list-item *ngIf="chatroomList.length === 0">Loading...</mat-list-item>
-        <mat-list-item
-          *ngFor="let friend of chatroomList; let i = index"
-          (click)="openConversation(i)"
-        >
-          <p>{{ friend.name }}</p>
-        </mat-list-item>
+        <mat-list item>
+            <mat-list-item *ngIf="userListEvents.length === 0">Loading...</mat-list-item>
+            <mat-list-item
+            *ngFor="let userListEvent of userListEvents; index as i"
+            [dir]="'ltr'"
+          >
+            <p >{{ userListEvent.displayName }}</p>
+            <p *ngIf="userListEvent.type == 'member:joined'" class="text-center">
+              has joined the conversation
+            </p>
+          </mat-list-item>
+        </mat-list>
+        <mat-form-field class="full-width" (keyup.enter)="addUserByEmail(email)">
+            <input
+              class="input__field"
+              matInput
+              placeholder="addperson@example.com"
+              name="email"
+              [(ngModel)]="email"
+            />
+            <mat-icon
+              matSuffix
+              (click)="addUserByEmail(email)"
+              (keyup)="$event.keyCode == 13 && addUserByEmail(email)"
+              >person_add</mat-icon
+            >
+          </mat-form-field>
       </mat-list>
     </mat-card>
   </mat-sidenav>
@@ -64,6 +93,7 @@
           {{(selectedConversation.members | keys).length}} Members</p> -->
     </div>
 
+    <!-- Conversation History-->
     <mat-divider></mat-divider>
     <mat-list id="scrollMe" dense class="conversation-history mat-typography">
       <mat-list-item
@@ -84,11 +114,9 @@
           has joined the conversation
         </p>
       </mat-list-item>
-      <!-- <mat-list-item id="anchor">
-        <p>message</p>
-      </mat-list-item> -->
     </mat-list>
 
+    <!-- Chat input box-->
     <div class="conversation-input">
       <mat-divider></mat-divider>
       <mat-form-field class="full-width" (keyup.enter)="sendMessage(message)">
@@ -105,8 +133,6 @@
           (keyup)="$event.keyCode == 13 && sendMessage()"
           >send</mat-icon
         >
-        <!-- <input matInput placeholder="Start chatting..." name="text" >
-          <mat-icon matSuffix >send</mat-icon> -->
       </mat-form-field>
     </div>
   </section>
