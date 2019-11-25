@@ -62,7 +62,6 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
     }
   ];
   constructor(
-    private chatService: ChatService,
     public auth: AuthService,
     public dialog: MatDialog,
     private afAuth: AngularFireAuth,
@@ -188,10 +187,9 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
       return new Promise((resolve, reject) => {
         this.chatroomList = [];
         const availableChatrooms = this.chatroomList;
-
         this.userInfoService.getUserByEmail(this.userInfo.email)
-          .then((userInfo) => {
-            const chatroomRefs = userInfo.chatroomRefs;
+          .then((userInfos) => {
+            const chatroomRefs = userInfos.chatroomRefs;
             if (chatroomRefs.length > 0) {
               chatroomRefs.forEach((item, index, arr) => {
                   item.get().then((chatroom) => {

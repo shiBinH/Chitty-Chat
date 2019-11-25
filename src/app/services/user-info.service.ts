@@ -45,6 +45,7 @@ export class UserInfoService {
           reject(new UserNotFoundError(`User with email: (${email}) does not exist`));
         } else {
           querySnapshot.forEach((userDocumentSnapshot: QueryDocumentSnapshot<User>) => {
+            console.log(userDocumentSnapshot.data());
             resolve(userDocumentSnapshot.data());
           });
         }
