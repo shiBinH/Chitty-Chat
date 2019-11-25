@@ -83,7 +83,7 @@
         />
         <div>&#9889;</div> <!-- placeholder for emoji-->
         </div>
-        <p *ngIf="event.type == 'text'" [dir]="'ltr'">{{ event.text }}</p>
+        <p *ngIf="event.type == 'text'" [dir]="'ltr'" class="dialog__box">{{ event.text }}</p>
         <p *ngIf="event.type == 'member:joined'" class="text-center">
           <!-- <b>{{ selectedConversation.members[event.from].name }}</b> -->
           has joined the conversation
