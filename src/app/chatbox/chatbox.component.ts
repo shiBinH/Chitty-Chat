@@ -26,6 +26,7 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
   @Input() userInfo: User;
   selectedChatRoomID = 'UgQEVNxekZrld8UJqtkZ';
   chatroomSubscription: Subscription;
+  userListSubscription: Subscription;
   selectedName: string;
   text: string;
   message = '';
@@ -49,6 +50,7 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
   //  Stores all available chatrooms to the user
   chatroomList = [];
 
+
   events = [
     {
       from: '1',
@@ -59,6 +61,20 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
       from: '2',
       type: 'text',
       text: 'messages'
+    }
+  ];
+  userListEvents = [
+    {
+      uid: '1',
+      type: 'text',
+      displayName: 'mesages',
+      email: 'example@email.com'
+    },
+    {
+      uid: '2',
+      type: 'text',
+      displayName: 'messages',
+      email: 'example@email.com'
     }
   ];
   constructor(
@@ -118,6 +134,7 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
     this.selectedConversation.name = this.chatroomList[index].name;
     this.selectedChatRoomID = this.chatroomList[index].id;
     this.updateChatHistory();
+    this.updateUserList();
   }
 
   sendMsgToFirebase(message: string) {
@@ -176,7 +193,6 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
       console.log(result);
     });
   }
-
   /**
    * @summary Updates the component's chatroomList property
    *          with the user's chatrooms
@@ -184,34 +200,64 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
    *          chatroomList property successfully updates
    */
   getChatroomList(): Promise<void> {
-      return new Promise((resolve, reject) => {
-        this.chatroomList = [];
-        const availableChatrooms = this.chatroomList;
-        this.userInfoService.getUserByEmail(this.userInfo.email)
-          .then((userInfos) => {
-            const chatroomRefs = userInfos.chatroomRefs;
-            if (chatroomRefs.length > 0) {
-              chatroomRefs.forEach((item, index, arr) => {
-                  item.get().then((chatroom) => {
-                    const chatroomData = chatroom.data();
-                    availableChatrooms.push({
-                      id: item.id,
-                      name: chatroomData.roomName
-                    });
-
-                    if (index === arr.length - 1) {
-                      resolve();
-                    }
-                  });
+    return new Promise((resolve, reject) => {
+      this.chatroomList = [];
+      const availableChatrooms = this.chatroomList;
+      this.userInfoService.getUserByEmail(this.userInfo.email)
+        .then((userInfo) => {
+          const chatroomRefs = userInfo.chatroomRefs;
+          if (chatroomRefs.length > 0) {
+            chatroomRefs.forEach((item, index, arr) => {
+              item.get().then((chatroom) => {
+                const chatroomData = chatroom.data();
+                availableChatrooms.push({
+                  id: item.id,
+                  name: chatroomData.roomName
                 });
-              } else {
-                reject(new Error('No user chatrooms found'));
-              }
-          })
-          .catch(() => {
-            reject(new Error('User not found'));
-          });
+
+                if (index === arr.length - 1) {
+                  resolve();
+                }
+              });
+            });
+          } else {
+            reject(new Error('No user chatrooms found'));
+          }
+        })
+      .catch(() => {
+        reject(new Error('User not found'));
+      });
+  });
+}
+  addUserByEmail(email: string) {
+  }
+
+  /**
+   * @summary Updates the component's userListEvents
+   *          with the users in the current chatrooms
+   */
+  updateUserList() {
+    if (this.userListSubscription) {
+      this.userListSubscription.unsubscribe();
+    }
+    this.userListSubscription = this.userInfoService
+      .getUserList()
+      .subscribe((message: any) => {
+        this.userListEvents = [];
+        message.forEach((element: any) => {
+            element.chatroomRefs.forEach((chatRef: any) => {
+                if (chatRef.id === this.selectedChatRoomID) {
+                    this.userListEvents.push({
+                      uid: element.uid,
+                      type: 'text',
+                      displayName: element.displayName,
+                      email: element.email
+                    });
+                }
+            });
+        });
       });
   }
+
 }
 
