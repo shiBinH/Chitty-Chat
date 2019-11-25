@@ -97,3 +97,28 @@ section .mat-list .mat-list-avatar{
     /* anchor nodes are required to have non-zero area */
     // height: 30px;
 }
+
+#scrollMe .mat-list-item {
+    height: auto;
+    min-height: 50px;
+}
+
+.messages {
+    word-break: break-word;
+    overflow: hidden;
+    display: flex;
+    align-items: flex-start;
+    padding: 3px 3px 0px 3px;
+    margin: 1px;
+}
+
+.mat-list-cotent {
+    border: 1px solid;
+}
+
+.dialog__box {
+    border: 1px solid;
+    padding: 3px;
+    background-color: darkslategrey;
+    border-radius: 3px;
+}
