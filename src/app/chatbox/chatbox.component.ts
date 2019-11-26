@@ -36,6 +36,7 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
   secretCode = 'secret';
   friendListId = [];
   roomName: string;
+  inputtedEmail: '';
   validEmailRegex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))/.source
     + /@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/.source;
 
@@ -242,6 +243,7 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
         .then((userInfo: any) => {
           this.chatRoomService.addUserToChatroom(userInfo.uid, this.selectedChatRoomID)
             .then(() => {
+              this.inputtedEmail = '';
               this.updateUserList();
             });
         });
@@ -256,6 +258,7 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
    * @todo Unit test
    */
   updateUserList() {
+    this.inputtedEmail = '';
     if (this.userListSubscription) {
       this.userListSubscription.unsubscribe();
     }

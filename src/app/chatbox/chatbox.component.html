@@ -59,18 +59,17 @@
             </p>
           </mat-list-item>
         </mat-list>
-        <mat-form-field class="full-width" (keyup.enter)="addUserByEmail(email)">
+        <mat-form-field class="full-width" (keyup.enter)="addUserByEmail(inputtedEmail)">
             <input
               class="input__field"
               matInput
               placeholder="addperson@example.com"
               name="email"
-              [(ngModel)]="email"
+              [(ngModel)]="inputtedEmail"
             />
             <mat-icon
               matSuffix
-              (click)="addUserByEmail(email)"
-              (keyup)="$event.keyCode == 13 && addUserByEmail(email)"
+              (click)="addUserByEmail(inputtedEmail)"
               >person_add</mat-icon
             >
           </mat-form-field>
