@@ -14,6 +14,7 @@ import { CreateChannelComponent } from '../createchannel/createchannel.component
 import { MatDialog, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { Subscription } from 'rxjs';
 import {ToneAnalyzerService} from '../services/tone-analyzer.service';
+import { isNull } from 'util';
 
 @Component({
   selector: 'app-chatbox',
@@ -35,6 +36,8 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
   secretCode = 'secret';
   friendListId = [];
   roomName: string;
+  validEmailRegex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))/.source
+    + /@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/.source;
 
   conversationsListId = [
     '05kbCceCnYxcfOxewCJK',
@@ -234,7 +237,7 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
    * @returns Promise that resolves if the email exists and user is successfully added
    */
   addUserByEmail(email: string): Promise<any> {
-    if (email && email.trim().length > 0) {
+    if (email && this.validateEmail(email)) {
       return this.userInfoService.getUserByEmail(email)
         .then((userInfo: any) => {
           this.chatRoomService.addUserToChatroom(userInfo.uid, this.selectedChatRoomID)
@@ -273,6 +276,10 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
             });
         });
       });
+  }
+
+  private validateEmail(email: string): boolean {
+    return !isNull(email.match(this.validEmailRegex));
   }
 
 }
