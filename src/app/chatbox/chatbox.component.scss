@@ -122,3 +122,7 @@ section .mat-list .mat-list-avatar{
     background-color: darkslategrey;
     border-radius: 3px;
 }
+
+.anchor:focus {
+    background-color: slategrey;
+}

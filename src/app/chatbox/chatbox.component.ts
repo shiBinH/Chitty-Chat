@@ -59,12 +59,14 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
     {
       from: '1',
       type: 'text',
-      text: 'mesages'
+      text: 'mesages',
+      tone_id: 'empty'
     },
     {
       from: '2',
       type: 'text',
-      text: 'messages'
+      text: 'messages',
+      tone_id: 'empty'
     }
   ];
   userListEvents = [
@@ -119,10 +121,30 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
           this.events.push({
             from: element.user,
             type: 'text',
-            text: element.content
+            text: element.content,
+            tone_id: element.tone_id
           });
         });
       });
+  }
+
+  updateEmoji(toneId: string) {
+    switch (toneId) {
+      case 'anger':
+        return '&#128545;';
+      case 'fear':
+        return '&#128552;';
+      case 'joy':
+        return '&#128516;';
+      case 'sadness':
+        return '&#128546;';
+      case 'confident':
+        return '&#128526;';
+      case 'tentative':
+        return '&#128533;';
+      case 'empty':
+        return '&#128526;';
+    }
   }
 
   selectConversation(id: string, index: number) {
@@ -150,6 +172,7 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
     .then((chatID) => {
       this.updateToneInFirebase(this.selectedChatRoomID, chatID, message);
     });
+
   }
 
   updateToneInFirebase(chatRoomID: string, chatID: string, message: string) {
@@ -164,6 +187,14 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
           }
         }
       }
+      const date = new Date();
+      this.messageService.sendMessage(
+      this.userInfo.uid,
+      date,
+      this.selectedChatRoomID,
+      message,
+      this.toneWithHighestScore
+      );
       console.log('selected tone : ', this.toneWithHighestScore);
       this.messageService.updateChatTone(chatRoomID, chatID, this.toneWithHighestScore);
 
