@@ -5,5 +5,5 @@ RUN npm install
 COPY . .
 RUN cd src/server && npm install
 RUN cd ../..
-RUN npm run-script build
+RUN npm run-script build-prod
 CMD [ "npm", "start" ]
