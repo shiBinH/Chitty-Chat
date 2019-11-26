@@ -30,7 +30,7 @@ import {
     MatTabsModule,
     MatToolbarModule,
     MatTooltipModule,
-    MatStepperModule,
+    MatStepperModule
 
 } from '@angular/material';
 import { FormsModule , ReactiveFormsModule } from '@angular/forms';
