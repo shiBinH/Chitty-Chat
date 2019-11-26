@@ -33,9 +33,10 @@ describe('CreateChannelComponent', () => {
       'data', ['getChatroomList', 'ownerID']
     );
     chatroomServiceSpy = jasmine.createSpyObj(
-      'ChatroomService', ['addNewChatroom']
+      'ChatroomService', ['addNewChatroom', 'addUserToChatroom']
     );
-    chatroomServiceSpy.addNewChatroom.and.returnValue(Promise.resolve());
+    chatroomServiceSpy.addNewChatroom.and.returnValue(Promise.resolve('mock chatroom id'));
+    chatroomServiceSpy.addUserToChatroom.and.returnValue(Promise.resolve());
     mockData.ownerID = 'mock owner';
     mockData.getChatroomList.and.returnValue('mock function');
 
@@ -80,11 +81,15 @@ describe('CreateChannelComponent', () => {
     });
 
     it('sendToFirebase() should add new chatroom', fakeAsync(() => {
+      component.roomName = 'mock room name';
+      spyOn(component, 'onNoClick');
       component.sendToFirebase();
       tick();
 
-      expect(mockData.getChatroomList).toHaveBeenCalled();
+      expect(component.onNoClick).toHaveBeenCalled();
       expect(chatroomServiceSpy.addNewChatroom).toHaveBeenCalled();
+      expect(chatroomServiceSpy.addUserToChatroom).toHaveBeenCalled();
+      expect(mockData.getChatroomList).toHaveBeenCalled();
     }));
 
     it('should render correct UI for dialog', () => {
