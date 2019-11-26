@@ -2,7 +2,6 @@ import { Component, OnInit, Inject, Optional } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { DialogData } from 'src/app/models/createchat.model';
 import { ChatroomService } from '../services/chatroom.service';
-import { stringify } from 'querystring';
 import { UserInfoService } from '../services/user-info.service';
 
 @Component({
@@ -12,7 +11,6 @@ import { UserInfoService } from '../services/user-info.service';
 })
 export class CreateChannelComponent implements OnInit {
 
-
   constructor(
     public userService: UserInfoService,
     public chatroomService: ChatroomService,
@@ -20,23 +18,22 @@ export class CreateChannelComponent implements OnInit {
     @Optional() public dialogRef: MatDialogRef<CreateChannelComponent>,
     @Optional() @Inject(MAT_DIALOG_DATA) public data: DialogData) {}
 
-   // tslint:disable-next-line: member-ordering
-   any: string[];
-   status: string;
-   roomName: string;
-   userList: string[];
-   ownerID: string;
+    roomName: string;
 
-    ngOnInit() {
-   }
+  ngOnInit() {}
 
   sendToFirebase(): void {
-    this.chatroomService.addNewChatroom('public', this.roomName, [], this.data.ownerID)
-    .then((result: any) => {
-      this.data.getChatroomList();
-    });
+    if (this.roomName && this.roomName.trim().length > 0) {
+      this.chatroomService.addNewChatroom('public', this.roomName, [], this.data.ownerID)
+        .then((chatroomID: any) => {
+          this.chatroomService.addUserToChatroom(this.data.ownerID, chatroomID)
+            .then(() => {
+              this.data.getChatroomList();
+              this.onNoClick();
+            });
+        });
+    }
   }
-
 
   onNoClick(): void {
     this.dialogRef.close();
