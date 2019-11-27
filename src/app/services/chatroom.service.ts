@@ -11,7 +11,7 @@ export class ChatroomService {
   constructor(private db: AngularFirestore) { }
 
   /**
-   * @summary get all chatroom id and metadata
+   * get all chatroom id and metadata
    * @returns an observable object that contains id and metadata of each chatroom
    */
   public getChatroomList() {
@@ -27,7 +27,7 @@ export class ChatroomService {
   }
 
   /**
-   * @summary get chat history of a chatroom
+   * get chat history of a chatroom
    * @param roomID id of the chatroom
    * @returns an object that contains id and metadata of each chat
    */
@@ -74,7 +74,7 @@ export class ChatroomService {
   }
 
   /**
-   * @summary get update of newest chats in a chatroom
+   * get update of newest chats in a chatroom
    * @param chatRoomID id of the chatroom
    * @returns an observable object that contains id and metadata of chats (sorted by their timestamp)
    */
