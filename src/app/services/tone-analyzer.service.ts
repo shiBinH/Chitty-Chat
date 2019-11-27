@@ -7,14 +7,10 @@ import { environment } from 'src/environments/environment';
 })
 export class ToneAnalyzerService {
 
-  uri = environment.production ?
-    'http://ec2-184-72-105-146.compute-1.amazonaws.com' :
-    'http://localhost:3000';
-
   constructor(private http: HttpClient) { }
 
   toneAnalyze(data) {
-    return this.http.post(`${this.uri}/api/tone`, { text: data });
+    return this.http.post(`${environment.uri}/api/tone`, { text: data });
   }
 
 }
