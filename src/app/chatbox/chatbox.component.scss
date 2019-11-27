@@ -117,14 +117,22 @@ section .mat-list .mat-list-avatar{
     align-items: flex-start;
     padding: 20px 3px 0px 3px;
     margin: 1px;
+    font-size: 16px;
 }
 
 .dialog__box {
     border-radius: 20px;
-    padding: 8px 15px;
+    padding: 11px 18px;
     margin-top: 10px;
     margin-bottom: 5px;
     background-color: rgba(65, 65, 65, 0.781);
     display: inline-block;
 }
 
+dir[ltr]{
+    right: 10px;
+}
+
+dir[rtl]{
+    left: 50px;
+}

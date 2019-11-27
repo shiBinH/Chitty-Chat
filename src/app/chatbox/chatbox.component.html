@@ -113,9 +113,9 @@
           matTooltip="{{ event.from === this.userInfo.uid ?  userInfo.displayName : this.selectedConversation.name}}"
           src="https://randomuser.me/api/portraits/thumb/lego/{{ i % 10 }}.jpg"
         />
-        <div [ngStyle]="{'position': 'relative', 'left': '2px'}" [innerHtml]="updateEmoji(event.tone_id)"></div> <!-- placeholder for emoji-->
         </div>
         <p *ngIf="event.type == 'text'" [dir]="'ltr'" class="dialog__box">{{ event.text }}</p>
+        <div class="emoji" [ngStyle]="{'position': 'relative'}" [innerHtml]="updateEmoji(event.tone_id)"></div>
         <p *ngIf="event.type == 'member:joined'" class="text-center">
           has joined the conversation
         </p>
