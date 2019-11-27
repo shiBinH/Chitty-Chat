@@ -61,8 +61,8 @@
 }
 
 section .mat-list .mat-list-avatar{
-    width: 25px;
-    height: 25px;
+    width: 40px;
+    height: 40px;
 }
 
 .mat-list-avatar {
@@ -108,17 +108,28 @@ section .mat-list .mat-list-avatar{
     overflow: hidden;
     display: flex;
     align-items: flex-start;
-    padding: 3px 3px 0px 3px;
+    padding: 20px 3px 0px 3px;
     margin: 1px;
 }
 
-.mat-list-cotent {
-    border: 1px solid;
+.dialog__box {
+    border-radius: 20px;
+    padding: 8px 15px;
+    margin-top: 10px;
+    margin-bottom: 5px;
+    background-color: rgba(65, 65, 65, 0.781);
+    display: inline-block;
 }
 
-.dialog__box {
-    border: 1px solid;
-    padding: 3px;
-    background-color: darkslategrey;
-    border-radius: 3px;
+.conversations .roomNameList{
+    transition: all 0.4s ease-in-out;
+}
+
+.conversations .roomNameList:hover{
+    background-color: #5F5F5F;
+    border-radius: 15px;
+}
+
+.roomNameList .red-color{
+    background-color: rgb(166, 58, 91);
 }

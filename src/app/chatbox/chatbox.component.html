@@ -10,10 +10,12 @@
           <mat-list class="conversations">
             <mat-list-item *ngIf="chatroomList.length === 0">Loading...</mat-list-item>
             <mat-list-item
+              class="roomNameList"
               *ngFor="let friend of chatroomList; let i = index"
               (click)="openConversation(i)"
             >
               <p>{{ friend.name }}</p>
+              <mat-divider></mat-divider>
             </mat-list-item>
             <!-- <mat-list-item
               *ngFor="let conversation of conversations; let i = index;"
@@ -28,7 +30,7 @@
               >
             </mat-list-item> -->
             <mat-list-item *ngFor="let roomname of roomName">
-                <b class="selected-room">{{roomname}}</b>
+                <b>{{roomname}}</b>
             </mat-list-item>
           </mat-list>
         </mat-tab>
@@ -85,7 +87,7 @@
   <section [class.show]="selectedConversation">
     <div class="mat-typography conversation-header">
       <h2>
-        <mat-icon>forum</mat-icon>
+        <mat-icon style="padding-right: 6px;">forum</mat-icon><b></b>
         {{ selectedConversation.name }}
       </h2>
       <!-- <p>

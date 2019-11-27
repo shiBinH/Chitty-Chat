@@ -35,6 +35,7 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
   secretCode = 'secret';
   friendListId = [];
   roomName: string;
+  isActive = false;
 
   conversationsListId = [
     '05kbCceCnYxcfOxewCJK',
@@ -135,6 +136,7 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
     this.selectedChatRoomID = this.chatroomList[index].id;
     this.updateChatHistory();
     this.updateUserList();
+    this.isActive = !this.isActive;
   }
 
   sendMsgToFirebase(message: string) {
