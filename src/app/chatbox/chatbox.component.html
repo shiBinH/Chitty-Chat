@@ -96,11 +96,11 @@
     <!-- Conversation History-->
     <mat-divider></mat-divider>
     <mat-list id="scrollMe" dense class="conversation-history mat-typography">
-      <ng-container *ngFor="let event of events; index as i">
+
       <mat-list-item
       
       [ngStyle]="{'word-break': 'break-word', 'overflow': 'hidden', 'display': 'flex', 'align-items': 'flex-start'}"
-        *ngIf="i % 2 != 0"
+      *ngFor="let event of events; index as i"
         [dir]="event.from === this.userInfo.uid ? 'rtl' : 'ltr'"
       >
       <div class="messages">
@@ -119,7 +119,7 @@
         </p>
       </div>
       </mat-list-item>
-    </ng-container>
+
     </mat-list>
 
     <!-- Chat input box-->

@@ -170,12 +170,12 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
       message
     )
     .then((chatID) => {
-      this.updateToneInFirebase(this.selectedChatRoomID, chatID, message);
+      // this.updateToneInFirebase(this.selectedChatRoomID, chatID, message);
     });
 
   }
 
-  updateToneInFirebase(chatRoomID: string, chatID: string, message: string) {
+  updateToneInFirebase(chatRoomID: string, message: string) {
     this.toneAnalyzerService.toneAnalyze(message).subscribe((res: any) => {
       let highestScore = 0.0;
       if (Object.keys(res.tones).length > 0) {
@@ -196,14 +196,15 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
       this.toneWithHighestScore
       );
       console.log('selected tone : ', this.toneWithHighestScore);
-      this.messageService.updateChatTone(chatRoomID, chatID, this.toneWithHighestScore);
+      // this.messageService.updateChatTone(chatRoomID, chatID, this.toneWithHighestScore);
 
     });
   }
 
   sendMessage(message: string) {
     if (this.message !== '') {
-      this.sendMsgToFirebase(message);
+      // this.sendMsgToFirebase(message);
+      this.updateToneInFirebase(this.selectedChatRoomID, message);
       this.message = '';
     }
   }
