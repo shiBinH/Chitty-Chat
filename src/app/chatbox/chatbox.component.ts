@@ -250,6 +250,10 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
         return '&#128533;';
       case 'empty':
         return '&#128526;';
+      case 'none':
+        return '&#127812;';
+      case 'analytical':
+          return '&#129488;';
     }
   }
 
@@ -293,6 +297,7 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
   updateToneInFirebase(message: string) {
     this.toneAnalyzerService.toneAnalyze(message).subscribe((res: any) => {
       let highestScore = 0.0;
+      this.toneWithHighestScore = 'none';
       if (Object.keys(res.tones).length > 0) {
         for (let i = 0; i < Object.keys(res).length; i++) {
           const obj = res.tones[i];
