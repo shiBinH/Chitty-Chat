@@ -10,7 +10,11 @@ import { UserInfoService } from '../services/user-info.service';
   styleUrls: ['./createchannel.component.scss']
 })
 export class CreateChannelComponent implements OnInit {
-
+  /**
+   * constructor
+   * @todo this documentation
+   * @returns void
+   */
   constructor(
     public userService: UserInfoService,
     public chatroomService: ChatroomService,
@@ -19,9 +23,19 @@ export class CreateChannelComponent implements OnInit {
     @Optional() @Inject(MAT_DIALOG_DATA) public data: DialogData) {}
 
     roomName: string;
-
+  /**
+   * @ignore
+   */
   ngOnInit() {}
-
+  /**
+   * sends to firebase calls addnewChatroom with an input roomName with length > 0
+   *          on a ChatroomService instance.
+   *          After the promise is received and accepted, it calls
+   *          addUserToChatroom to add the current user to that new chatroom.
+   *          When that promise is received and accepted it updates the chatroom list and closes dialogue
+   *
+   * @returns void
+   */
   sendToFirebase(): void {
     if (this.roomName && this.roomName.trim().length > 0) {
       this.chatroomService.addNewChatroom('public', this.roomName, [], this.data.ownerID)
@@ -34,7 +48,11 @@ export class CreateChannelComponent implements OnInit {
         });
     }
   }
-
+  /**
+   * closes the dialogue, used on the "exit" button
+   *
+   * @returns void
+   */
   onNoClick(): void {
     this.dialogRef.close();
   }
