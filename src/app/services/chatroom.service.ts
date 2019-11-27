@@ -10,6 +10,10 @@ export class ChatroomService {
 
   constructor(private db: AngularFirestore) { }
 
+  /**
+   * get all chatroom id and metadata
+   * @returns an observable object that contains id and metadata of each chatroom
+   */
   public getChatroomList() {
     return this.db.collection('chatrooms').snapshotChanges()
             .pipe(map(actions =>
@@ -22,6 +26,11 @@ export class ChatroomService {
           );
   }
 
+  /**
+   * get chat history of a chatroom
+   * @param roomID id of the chatroom
+   * @returns an object that contains id and metadata of each chat
+   */
   public getChatHistory(roomID: string) {
     return this.db.collection(`chatrooms/${roomID}/chats`).snapshotChanges()
             .pipe(take(1))
@@ -35,7 +44,13 @@ export class ChatroomService {
           );
   }
 
-  // status can be public/private
+  /**
+   * @summary add a new chatroom to database
+   * @param status indicate public or private this new chatroom will be
+   * @param roomName name of this new chatroom
+   * @param userList all the users can access this new chatroom
+   * @param ownerID id of the owner
+   */
   public addNewChatroom(status: string, roomName: string, userList: string[], ownerID: string): Promise<any> {
     return new Promise((resolve, reject) => {
       const ROOMID = this.db.createId();
@@ -58,6 +73,11 @@ export class ChatroomService {
     });
   }
 
+  /**
+   * get update of newest chats in a chatroom
+   * @param chatRoomID id of the chatroom
+   * @returns an observable object that contains id and metadata of chats (sorted by their timestamp)
+   */
   public getUpdates(chatRoomID: string): Observable<any> {
     return this.db
       .collection(`chatrooms/${chatRoomID}/chats`)
