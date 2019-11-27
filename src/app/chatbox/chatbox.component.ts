@@ -22,43 +22,115 @@ import { Subscription } from 'rxjs';
 import {ToneAnalyzerService} from '../services/tone-analyzer.service';
 import { isNull } from 'util';
 
+
 @Component({
   selector: 'app-chatbox',
   templateUrl: './chatbox.component.html',
   styleUrls: ['./chatbox.component.scss']
 })
 export class ChatboxComponent implements OnInit, AfterViewChecked {
+
+  /**
+   * holds the user information from authentication
+   */
   @Input() userInfo: User;
+
+  /**
+   * holds the current chatroom id for the user. has a default chatroom id
+   */
   selectedChatRoomID = 'UgQEVNxekZrld8UJqtkZ';
+
+  /**
+   * used to subscribe to chatroomlist for the get updateChatHistory function
+   */
   chatroomSubscription: Subscription;
+
+  /**
+   * used to subscribe to userList for the get userList function
+   */
   userListSubscription: Subscription;
+
+  /**
+   * name of selected chatroom
+   */
   selectedName: string;
+
+  /**
+   * text not used
+   */
   text: string;
+
+  /**
+   * connected with user input for chat messages
+   */
   message = '';
+
+  /**
+   * messages [] not used
+   */
   messages: string[] = [];
+
+  /**
+   * used by UpdateToneInFirebase to hold the tone
+   */
   toneWithHighestScore = 'none';
+
+  /**
+   * secretCode
+   */
   secretCode = 'secret';
+
+  /**
+   * connected with the inputtedEmail material element. stores email to add user to chatroom
+   */
   friendListId = [];
+
+  /**
+   * stores the name of the chatroom
+   */
   roomName: string;
-  isActive = false;
+
+  /**
+   * connected with the inputtedEmail material element. stores email to add user to chatroom
+   */
   inputtedEmail: '';
+
+  /**
+   * email regex to verify correct email syntax
+   */
   validEmailRegex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))/.source
     + /@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/.source;
 
+  /**
+   * conversationsListID
+   */
   conversationsListId = [
     '05kbCceCnYxcfOxewCJK',
     'UgQEVNxekZrld8UJqtkZ',
     'e0cGp5IpWGb9AuC3iuM2',
     'ji9ldKigbHxBadcZyb1E'
   ];
+
+  /**
+   * holds the name of the selected conversation
+   */
   selectedConversation = {
     name: ''
   };
+
+  /**
+   * conversations kept the list of chatrooms
+   */
   conversations = [];
 
-  //  Stores all available chatrooms to the user
+  /**
+   * chatroom list will keep all the chatrooms the user is in
+   */
   chatroomList = [];
 
+  /**
+   * events connected with the html material list of chat messages
+   */
   events = [
     {
       from: '1',
@@ -73,6 +145,10 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
       tone_id: 'empty'
     }
   ];
+
+  /**
+   * UserList connected with the html material list of users
+   */
   userListEvents = [
     {
       uid: '1',
@@ -87,6 +163,10 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
       email: 'example@email.com'
     }
   ];
+
+  /**
+   * Constructor
+   */
   constructor(
     public auth: AuthService,
     public dialog: MatDialog,
@@ -97,6 +177,12 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
     private toneAnalyzerService: ToneAnalyzerService
   ) {}
 
+  /**
+   * on init calls getChatroomList and when the received promise is accepted
+   *          by default selects the first chatroom that the user has available
+   *
+   * @returns void
+   */
   ngOnInit() {
     this.getChatroomList().then(() => {
       if (this.chatroomList.length) {
@@ -106,12 +192,23 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
     console.log(this.userInfo);
   }
 
+  /**
+   * Calls scrollBottom to scroll down.
+   *          Called after ngAfterContentInit when the component's view has been initialized.
+   *          Applies to components only. implements AfterViewInit' to the class.
+   *
+   * @returns void
+   */
   ngAfterViewChecked(): void {
-    // Called after ngAfterContentInit when the component's view has been initialized. Applies to components only.
-    // Add 'implements AfterViewInit' to the class.
     this.scrollBottom();
   }
 
+  /**
+   * unsubscribes previous chats history and populates events structure
+   *          with chat messages from the current chatroom with another subscription.
+   *
+   * @returns void
+   */
   updateChatHistory() {
     if (this.chatroomSubscription) {
       this.chatroomSubscription.unsubscribe();
@@ -131,6 +228,12 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
       });
   }
 
+  /**
+   * for each messages toneID return the emoji for that tone
+   *          Called when displaying each message
+   * @param toneID the emotion of a message.
+   * @returns emoji corresponding to emotion
+   */
   updateEmoji(toneId: string) {
     switch (toneId) {
       case 'anger':
@@ -147,9 +250,19 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
         return '&#128533;';
       case 'empty':
         return '&#128526;';
+      case 'none':
+        return '&#127812;';
+      case 'analytical':
+          return '&#129488;';
     }
   }
 
+  /**
+   * Upon clicking on a chatroom list, this is called to select a chatroom in the
+   *          conversations array and calls openConversation on that id
+   * @deprecated Currently this is not called
+   * @returns void
+   */
   selectConversation(id: string, index: number) {
     const result = this.conversations.filter(
       conversation => conversation.id === id
@@ -157,17 +270,34 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
     this.openConversation(index);
   }
 
+  /**
+   * Upon clicking on a chatroom list, this is called to set the selected
+   *          chatroom ID and name to the clicked chatroom ID and name. the index in the displayed
+   *          chatroom list corresponds to the location of that chatroom in chatroomList array.
+   *          calls updateChatHistory and updateUserList
+   * @param index corresponds to a chatroom in chatroomList
+   * @returns void
+   */
   openConversation(index: number) {
     this.selectedConversation.name = this.chatroomList[index].name;
     this.selectedChatRoomID = this.chatroomList[index].id;
     this.updateChatHistory();
     this.updateUserList();
-    this.isActive = !this.isActive;
   }
 
-  updateToneInFirebase(chatRoomID: string, message: string) {
+  /**
+   * Uses Tone analyzer to update a message. The
+   *          tone analyzer service will give scores for each sentence in that
+   *          message. The highest scoring emotion score and the tone_id associated
+   *          with the score is stored with that message. Then, sends the message.
+   * @param message given by this.sendMessage it is the user input message
+   *
+   * @returns void
+   */
+  updateToneInFirebase(message: string) {
     this.toneAnalyzerService.toneAnalyze(message).subscribe((res: any) => {
       let highestScore = 0.0;
+      this.toneWithHighestScore = 'none';
       if (Object.keys(res.tones).length > 0) {
         for (let i = 0; i < Object.keys(res).length; i++) {
           const obj = res.tones[i];
@@ -189,16 +319,32 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
     });
   }
 
+  /**
+   * Calls updateToneInFirebase to add emotion value to message.
+   *          empties the message element after calling.
+   * @param message the user message input string
+   * @returns void
+   */
   sendMessage(message: string) {
     if (this.message !== '') {
-      this.updateToneInFirebase(this.selectedChatRoomID, message);
+      this.updateToneInFirebase(message);
       this.message = '';
     }
   }
-
+  /**
+   * scrolls all-the-way down the "scrollMe" element
+   *
+   * @returns void
+   */
   scrollBottom() {
     document.getElementById('scrollMe').scrollBy(0, 50000000);
   }
+
+  /**
+   * Creates a CreateChannelComponent with the parameters
+   *          of user id and the chatroom array. Used to Create a new chatroom.
+   * @returns void
+   */
   openDialog(): void {
     const dialogRef = this.dialog.open(CreateChannelComponent, {
       width: '2000px',
@@ -215,7 +361,7 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
     });
   }
   /**
-   * @summary Updates the component's chatroomList property
+   * Updates the component's chatroomList property
    *          with the user's chatrooms
    * @returns A Promise that resolves if the component's
    *          chatroomList property successfully updates
@@ -253,7 +399,7 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
   }
 
   /**
-   * @summary Adds user with email to chatroom with id Chatbox.component.selectedChatroomID
+   * Adds user with email to chatroom with id Chatbox.component.selectedChatroomID
    * @param email Email address of user to add
    * @returns Promise that resolves if the email exists and user is successfully added
    */
@@ -273,9 +419,10 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
   }
 
   /**
-   * @summary Updates the component's userListEvents
+   * Updates the component's userListEvents
    *          with the users in the current chatrooms
    * @todo Unit test
+   *
    */
   updateUserList() {
     this.inputtedEmail = '';
@@ -301,6 +448,10 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
       });
   }
 
+  /**
+   * Uses email regex to validate a email string
+   * @returns boolean
+   */
   private validateEmail(email: string): boolean {
     return !isNull(email.match(this.validEmailRegex));
   }

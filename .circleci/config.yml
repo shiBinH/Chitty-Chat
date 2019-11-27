@@ -38,6 +38,9 @@ jobs:
       - run:
           name: Testing
           command: npm run test
+      # Store coverage reports
+      - store_artifacts:
+          path: coverage/chitty-chat
       # Build project with different configuration based on
       # the current branch
       - run:

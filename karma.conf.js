@@ -18,9 +18,16 @@ module.exports = function (config) {
     coverageIstanbulReporter: {
       dir: require('path').join(__dirname, './coverage/chitty-chat'),
       reports: ['html', 'lcovonly', 'text-summary'],
-      fixWebpackSourcePaths: true
+      fixWebpackSourcePaths: true,
+      thresholds: {
+        emitWarning: false, 
+        global: {
+          lines: 70,
+        }
+      },
+      file: 'coverage.txt'
     },
-    reporters: ['progress', 'kjhtml'],
+    reporters: ['coverage-istanbul', 'progress', 'kjhtml'],
     port: 9876,
     colors: true,
     logLevel: config.LOG_INFO,
