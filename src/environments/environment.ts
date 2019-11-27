@@ -4,6 +4,7 @@
 
 export const environment = {
   production: false,
+  uri: 'http://localhost:3000',
   firebase: {
     apiKey: 'AIzaSyD-9drCjUDfcRit3vaqTkY_8PVZCOsfiiA',
     authDomain: 'chitty-chat-ba34b.firebaseapp.com',

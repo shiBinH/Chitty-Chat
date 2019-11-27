@@ -1,5 +1,6 @@
 export const environment = {
   production: true,
+  uri: 'https://chat.chitty-chat.com',
   firebase: {
     apiKey: 'AIzaSyD-9drCjUDfcRit3vaqTkY_8PVZCOsfiiA',
     authDomain: 'chitty-chat-ba34b.firebaseapp.com',
