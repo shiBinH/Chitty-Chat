@@ -10,11 +10,13 @@
           <mat-list class="conversations">
             <mat-list-item *ngIf="chatroomList.length === 0">Loading...</mat-list-item>
             <mat-list-item
+              class="roomNameList"
               *ngFor="let friend of chatroomList; let i = index"
               (click)="openConversation(i)"
               class="anchor"
             >
               <p>{{ friend.name }}</p>
+              <mat-divider></mat-divider>
             </mat-list-item>
             <!-- <mat-list-item
               *ngFor="let conversation of conversations; let i = index;"
@@ -29,7 +31,7 @@
               >
             </mat-list-item> -->
             <mat-list-item *ngFor="let roomname of roomName">
-                <b class="selected-room">{{roomname}}</b>
+                <b>{{roomname}}</b>
             </mat-list-item>
           </mat-list>
         </mat-tab>
@@ -85,7 +87,7 @@
   <section [class.show]="selectedConversation">
     <div class="mat-typography conversation-header">
       <h2>
-        <mat-icon>forum</mat-icon>
+        <mat-icon style="padding-right: 6px;">forum</mat-icon><b></b>
         {{ selectedConversation.name }}
       </h2>
       <!-- <p>
@@ -111,9 +113,9 @@
           matTooltip="{{ event.from === this.userInfo.uid ?  userInfo.displayName : this.selectedConversation.name}}"
           src="https://randomuser.me/api/portraits/thumb/lego/{{ i % 10 }}.jpg"
         />
-        <div [ngStyle]="{'position': 'relative', 'left': '2px'}" [innerHtml]="updateEmoji(event.tone_id)"></div> <!-- placeholder for emoji-->
         </div>
         <p *ngIf="event.type == 'text'" [dir]="'ltr'" class="dialog__box">{{ event.text }}</p>
+        <div class="emoji" [ngStyle]="{'position': 'relative'}" [innerHtml]="updateEmoji(event.tone_id)"></div>
         <p *ngIf="event.type == 'member:joined'" class="text-center">
           has joined the conversation
         </p>

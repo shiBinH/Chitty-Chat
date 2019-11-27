@@ -45,8 +45,15 @@
 }
 
 .conversations .mat-list-item {
+    transition: all 0.4s ease-in-out;
     cursor: pointer;
 }
+
+.conversations .mat-list-item:hover {
+    color: #fadffb;
+    background-color: rgb(110, 110, 110);
+    border-radius: 10px;
+  }
 
 .mat-card {
     height: 100%;
@@ -61,8 +68,8 @@
 }
 
 section .mat-list .mat-list-avatar{
-    width: 25px;
-    height: 25px;
+    width: 40px;
+    height: 40px;
 }
 
 .mat-list-avatar {
@@ -108,21 +115,16 @@ section .mat-list .mat-list-avatar{
     overflow: hidden;
     display: flex;
     align-items: flex-start;
-    padding: 3px 3px 0px 3px;
+    padding: 20px 3px 0px 3px;
     margin: 1px;
-}
-
-.mat-list-cotent {
-    border: 1px solid;
+    font-size: 16px;
 }
 
 .dialog__box {
-    border: 1px solid;
-    padding: 3px;
-    background-color: darkslategrey;
-    border-radius: 3px;
-}
-
-.anchor:focus {
-    background-color: slategrey;
+    border-radius: 20px;
+    padding: 11px 18px;
+    margin-top: 10px;
+    margin-bottom: 5px;
+    background-color: rgba(65, 65, 65, 0.781);
+    display: inline-block;
 }
