@@ -45,8 +45,15 @@
 }
 
 .conversations .mat-list-item {
+    transition: all 0.4s ease-in-out;
     cursor: pointer;
 }
+
+.conversations .mat-list-item:hover {
+    color: #fadffb;
+    background-color: rgb(110, 110, 110);
+    border-radius: 10px;
+  }
 
 .mat-card {
     height: 100%;
@@ -121,15 +128,3 @@ section .mat-list .mat-list-avatar{
     display: inline-block;
 }
 
-.conversations .roomNameList{
-    transition: all 0.4s ease-in-out;
-}
-
-.conversations .roomNameList:hover{
-    background-color: #5F5F5F;
-    border-radius: 15px;
-}
-
-.roomNameList .red-color{
-    background-color: rgb(166, 58, 91);
-}
