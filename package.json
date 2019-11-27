@@ -5,6 +5,7 @@
     "ng": "ng",
     "start": "node src/server/index.js",
     "build": "ng build",
+    "build-prod": "ng build --prod",
     "test": "ng test --watch false",
     "lint": "ng lint",
     "e2e": "ng e2e",

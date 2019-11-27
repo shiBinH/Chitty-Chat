@@ -1,4 +1,10 @@
-import { Component, OnInit, Input, AfterViewInit, AfterViewChecked } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  Input,
+  AfterViewInit,
+  AfterViewChecked
+} from '@angular/core';
 import { ChatService } from '../services/chat.service';
 import { AuthService } from '../services/auth.service';
 import { AngularFireAuth } from '@angular/fire/auth';
@@ -14,15 +20,14 @@ import { CreateChannelComponent } from '../createchannel/createchannel.component
 import { MatDialog, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { Subscription } from 'rxjs';
 import {ToneAnalyzerService} from '../services/tone-analyzer.service';
+import { isNull } from 'util';
 
 @Component({
   selector: 'app-chatbox',
   templateUrl: './chatbox.component.html',
   styleUrls: ['./chatbox.component.scss']
 })
-
 export class ChatboxComponent implements OnInit, AfterViewChecked {
-
   @Input() userInfo: User;
   selectedChatRoomID = 'UgQEVNxekZrld8UJqtkZ';
   chatroomSubscription: Subscription;
@@ -35,6 +40,9 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
   secretCode = 'secret';
   friendListId = [];
   roomName: string;
+  inputtedEmail: '';
+  validEmailRegex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))/.source
+    + /@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/.source;
 
   conversationsListId = [
     '05kbCceCnYxcfOxewCJK',
@@ -50,17 +58,18 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
   //  Stores all available chatrooms to the user
   chatroomList = [];
 
-
   events = [
     {
       from: '1',
       type: 'text',
-      text: 'mesages'
+      text: 'mesages',
+      tone_id: 'empty'
     },
     {
       from: '2',
       type: 'text',
-      text: 'messages'
+      text: 'messages',
+      tone_id: 'empty'
     }
   ];
   userListEvents = [
@@ -85,15 +94,14 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
     private userInfoService: UserInfoService,
     private chatRoomService: ChatroomService,
     private toneAnalyzerService: ToneAnalyzerService
-  ) { }
+  ) {}
 
   ngOnInit() {
-    this.getChatroomList()
-      .then(() => {
-        if (this.chatroomList.length) {
-          this.openConversation(0);
-        }
-      });
+    this.getChatroomList().then(() => {
+      if (this.chatroomList.length) {
+        this.openConversation(0);
+      }
+    });
     console.log(this.userInfo);
   }
 
@@ -104,20 +112,41 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
   }
 
   updateChatHistory() {
+    if (this.chatroomSubscription) {
+      this.chatroomSubscription.unsubscribe();
+    }
     this.events = [];
     this.chatroomSubscription = this.chatRoomService
       .getUpdates(this.selectedChatRoomID)
       .subscribe((message: any) => {
-        console.log(message);
         message.forEach((element: Chat) => {
           this.events.push({
             from: element.user,
             type: 'text',
-            text: element.content
+            text: element.content,
+            tone_id: element.tone_id
           });
-          console.log(this.events);
         });
       });
+  }
+
+  updateEmoji(toneId: string) {
+    switch (toneId) {
+      case 'anger':
+        return '&#128545;';
+      case 'fear':
+        return '&#128552;';
+      case 'joy':
+        return '&#128516;';
+      case 'sadness':
+        return '&#128546;';
+      case 'confident':
+        return '&#128526;';
+      case 'tentative':
+        return '&#128533;';
+      case 'empty':
+        return '&#128526;';
+    }
   }
 
   selectConversation(id: string, index: number) {
@@ -128,29 +157,13 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
   }
 
   openConversation(index: number) {
-    if (this.chatroomSubscription) {
-      this.chatroomSubscription.unsubscribe();
-    }
     this.selectedConversation.name = this.chatroomList[index].name;
     this.selectedChatRoomID = this.chatroomList[index].id;
     this.updateChatHistory();
     this.updateUserList();
   }
 
-  sendMsgToFirebase(message: string) {
-    const date = new Date();
-    this.messageService.sendMessage(
-      this.userInfo.uid,
-      date,
-      this.selectedChatRoomID,
-      message
-    )
-    .then((chatID) => {
-      this.updateToneInFirebase(this.selectedChatRoomID, chatID, message);
-    });
-  }
-
-  updateToneInFirebase(chatRoomID: string, chatID: string, message: string) {
+  updateToneInFirebase(chatRoomID: string, message: string) {
     this.toneAnalyzerService.toneAnalyze(message).subscribe((res: any) => {
       let highestScore = 0.0;
       if (Object.keys(res.tones).length > 0) {
@@ -162,15 +175,21 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
           }
         }
       }
+      const date = new Date();
+      this.messageService.sendMessage(
+        this.userInfo.uid,
+        date,
+        this.selectedChatRoomID,
+        message,
+        this.toneWithHighestScore
+      );
       console.log('selected tone : ', this.toneWithHighestScore);
-      this.messageService.updateChatTone(chatRoomID, chatID, this.toneWithHighestScore);
-
     });
   }
 
   sendMessage(message: string) {
     if (this.message !== '') {
-      this.sendMsgToFirebase(message);
+      this.updateToneInFirebase(this.selectedChatRoomID, message);
       this.message = '';
     }
   }
@@ -203,12 +222,13 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
     return new Promise((resolve, reject) => {
       this.chatroomList = [];
       const availableChatrooms = this.chatroomList;
-      this.userInfoService.getUserByEmail(this.userInfo.email)
-        .then((userInfo) => {
+      this.userInfoService
+        .getUserByEmail(this.userInfo.email)
+        .then(userInfo => {
           const chatroomRefs = userInfo.chatroomRefs;
           if (chatroomRefs.length > 0) {
             chatroomRefs.forEach((item, index, arr) => {
-              item.get().then((chatroom) => {
+              item.get().then(chatroom => {
                 const chatroomData = chatroom.data();
                 availableChatrooms.push({
                   id: item.id,
@@ -227,16 +247,36 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
       .catch(() => {
         reject(new Error('User not found'));
       });
-  });
-}
-  addUserByEmail(email: string) {
+    });
+  }
+
+  /**
+   * @summary Adds user with email to chatroom with id Chatbox.component.selectedChatroomID
+   * @param email Email address of user to add
+   * @returns Promise that resolves if the email exists and user is successfully added
+   */
+  addUserByEmail(email: string): Promise<any> {
+    if (email && this.validateEmail(email)) {
+      return this.userInfoService.getUserByEmail(email)
+        .then((userInfo: any) => {
+          this.chatRoomService.addUserToChatroom(userInfo.uid, this.selectedChatRoomID)
+            .then(() => {
+              this.inputtedEmail = '';
+              this.updateUserList();
+            });
+        });
+    } else {
+      return Promise.reject();
+    }
   }
 
   /**
    * @summary Updates the component's userListEvents
    *          with the users in the current chatrooms
+   * @todo Unit test
    */
   updateUserList() {
+    this.inputtedEmail = '';
     if (this.userListSubscription) {
       this.userListSubscription.unsubscribe();
     }
@@ -245,19 +285,22 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
       .subscribe((message: any) => {
         this.userListEvents = [];
         message.forEach((element: any) => {
-            element.chatroomRefs.forEach((chatRef: any) => {
-                if (chatRef.id === this.selectedChatRoomID) {
-                    this.userListEvents.push({
-                      uid: element.uid,
-                      type: 'text',
-                      displayName: element.displayName,
-                      email: element.email
-                    });
-                }
-            });
+          element.chatroomRefs.forEach((chatRef: any) => {
+            if (chatRef.id === this.selectedChatRoomID) {
+              this.userListEvents.push({
+                uid: element.uid,
+                type: 'text',
+                displayName: element.displayName,
+                email: element.email
+              });
+            }
+          });
         });
       });
   }
 
-}
+  private validateEmail(email: string): boolean {
+    return !isNull(email.match(this.validEmailRegex));
+  }
 
+}

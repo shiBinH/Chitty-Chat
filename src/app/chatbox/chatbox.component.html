@@ -12,6 +12,7 @@
             <mat-list-item
               *ngFor="let friend of chatroomList; let i = index"
               (click)="openConversation(i)"
+              class="anchor"
             >
               <p>{{ friend.name }}</p>
             </mat-list-item>
@@ -35,7 +36,7 @@
       </mat-tab-group>
       <mat-menu #appMenu="matMenu" yPosition="above">
         <button mat-menu-item (click)="openDialog()">Create Channel</button>
-        <button mat-menu-item (click)="sendToFirebase()">Private Message Individual</button>
+        <button mat-menu-item>Private Message Individual</button>
       </mat-menu>
         
       <button mat-raised-button color="primary" [matMenuTriggerFor]="appMenu" style="position: absolute; bottom: 20px; right: 15px;">
@@ -59,18 +60,17 @@
             </p>
           </mat-list-item>
         </mat-list>
-        <mat-form-field class="full-width" (keyup.enter)="addUserByEmail(email)">
+        <mat-form-field class="full-width" (keyup.enter)="addUserByEmail(inputtedEmail)">
             <input
               class="input__field"
               matInput
               placeholder="addperson@example.com"
               name="email"
-              [(ngModel)]="email"
+              [(ngModel)]="inputtedEmail"
             />
             <mat-icon
               matSuffix
-              (click)="addUserByEmail(email)"
-              (keyup)="$event.keyCode == 13 && addUserByEmail(email)"
+              (click)="addUserByEmail(inputtedEmail)"
               >person_add</mat-icon
             >
           </mat-form-field>
@@ -96,11 +96,11 @@
     <!-- Conversation History-->
     <mat-divider></mat-divider>
     <mat-list id="scrollMe" dense class="conversation-history mat-typography">
+
       <mat-list-item
-      id="anchor"
       
       [ngStyle]="{'word-break': 'break-word', 'overflow': 'hidden', 'display': 'flex', 'align-items': 'flex-start'}"
-        *ngFor="let event of events; index as i"
+      *ngFor="let event of events; index as i"
         [dir]="event.from === this.userInfo.uid ? 'rtl' : 'ltr'"
       >
       <div class="messages">
@@ -111,7 +111,7 @@
           matTooltip="{{ event.from === this.userInfo.uid ?  userInfo.displayName : this.selectedConversation.name}}"
           src="https://randomuser.me/api/portraits/thumb/lego/{{ i % 10 }}.jpg"
         />
-        <div>&#9889;</div> <!-- placeholder for emoji-->
+        <div [ngStyle]="{'position': 'relative', 'left': '2px'}" [innerHtml]="updateEmoji(event.tone_id)"></div> <!-- placeholder for emoji-->
         </div>
         <p *ngIf="event.type == 'text'" [dir]="'ltr'" class="dialog__box">{{ event.text }}</p>
         <p *ngIf="event.type == 'member:joined'" class="text-center">
@@ -119,6 +119,7 @@
         </p>
       </div>
       </mat-list-item>
+
     </mat-list>
 
     <!-- Chat input box-->
@@ -135,7 +136,6 @@
         <mat-icon
           matSuffix
           (click)="sendMessage(message)"
-          (keyup)="$event.keyCode == 13 && sendMessage()"
           >send</mat-icon
         >
       </mat-form-field>
