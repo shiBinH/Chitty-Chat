@@ -298,12 +298,11 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
     this.toneAnalyzerService.toneAnalyze(message).subscribe((res: any) => {
       let highestScore = 0.0;
       this.toneWithHighestScore = 'none';
-      if (Object.keys(res.tones).length > 0) {
-        for (let i = 0; i < Object.keys(res).length; i++) {
-          const obj = res.tones[i];
-          if (obj.score > highestScore) {
-            this.toneWithHighestScore = obj.tone_id;
-            highestScore = obj.score;
+      if (res.tones.length > 0) {
+        for (const tone of res.tones) {
+          if (tone.score > highestScore) {
+            this.toneWithHighestScore = tone.tone_id;
+            highestScore = tone.score;
           }
         }
       }
