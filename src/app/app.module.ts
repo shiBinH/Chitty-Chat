@@ -7,7 +7,6 @@ import { ChatboxComponent } from './chatbox/chatbox.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { FormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
-import { ChatService } from './services/chat.service';
 import { MaterialModule } from './modules/material-module';
 
 import { AngularFireModule } from '@angular/fire';
@@ -55,7 +54,7 @@ const config = {
   ],
   exports: [
   ],
-  providers: [ChatService],
+  providers: [],
   bootstrap: [AppComponent],
   entryComponents: [CreateChannelComponent]
 })
