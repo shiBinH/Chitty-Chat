@@ -22,7 +22,8 @@ module.exports = function (config) {
       thresholds: {
         emitWarning: false, 
         global: {
-          lines: 70,
+          lines: 80,
+          branches: 80
         }
       },
       file: 'coverage.txt'
