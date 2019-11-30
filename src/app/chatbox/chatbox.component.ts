@@ -243,10 +243,8 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
         return '&#128526;';
       case 'tentative':
         return '&#128533;';
-      case 'empty':
-        return '&#128526;';
       case 'none':
-        return '&#127812;';
+        return '&#128578;';
       case 'analytical':
         return '&#129488;';
     }

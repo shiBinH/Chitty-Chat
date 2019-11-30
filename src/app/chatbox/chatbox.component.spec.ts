@@ -40,7 +40,6 @@ describe('ChatboxComponent', () => {
     chatrooms: ['chatroomID1', 'chatroomID2']
   };
   const SELECTED_CHATROOM_ID = 'selectedChatroomID';
-  const TONES = ['anger', 'fear', 'joy', 'sadness', 'confident', 'tentative', 'empty', 'none', 'analytical'];
   const INVALID_TONE = 'invalid tone';
   const SELECTED_CHATROOM_INDEX = 1;
   const CHAT_HISTORY = [
@@ -54,6 +53,16 @@ describe('ChatboxComponent', () => {
     {uid: 'userID2', displayName: 'user2', email: 'email2', chatroomRefs: [{id: CHATROOM1_ID}, {id: SELECTED_CHATROOM_ID}]}];
   const TONE_ANALYZER_SERVICE_RESPONSE = {
     tones: [{score: 0.4, tone_id: 'sad'}, {score: 0.5, tone_id: 'angry'}]};
+  const TONES_EMOJI_DICT = {
+    anger: '&#128545;',
+    fear: '&#128552;',
+    joy: '&#128516;',
+    sadness: '&#128546;',
+    confident: '&#128526;',
+    tentative: '&#128533;',
+    none: '&#128578;',
+    analytical: '&#129488;'
+  };
 
   let componentUnderTest: ChatboxComponent;
   let fixture: ComponentFixture<ChatboxComponent>;
@@ -114,6 +123,9 @@ describe('ChatboxComponent', () => {
     TestBed.get(UserInfoService)
       .getUserList.withArgs(jasmine.any(String))
       .and.returnValue(mockObject);
+    TestBed.get(ChatroomService)
+      .getUpdates.withArgs(jasmine.any(String))
+      .and.returnValue(mockObservable);
 
     fixture = TestBed.createComponent(ChatboxComponent);
     componentUnderTest = fixture.componentInstance;
@@ -177,8 +189,8 @@ describe('ChatboxComponent', () => {
   });
 
   it('calling updateEmoji() SHOULD return emoji IF valid tone', () => {
-    for (const tone of TONES) {
-      expect(componentUnderTest.updateEmoji(tone)).toEqual(jasmine.any(String));
+    for (const tone of Object.keys(TONES_EMOJI_DICT)) {
+      expect(componentUnderTest.updateEmoji(tone)).toEqual(TONES_EMOJI_DICT[tone]);
     }
   });
 
