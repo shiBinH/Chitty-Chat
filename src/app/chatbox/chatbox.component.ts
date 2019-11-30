@@ -2,10 +2,8 @@ import {
   Component,
   OnInit,
   Input,
-  AfterViewInit,
   AfterViewChecked
 } from '@angular/core';
-import { ChatService } from '../services/chat.service';
 import { AuthService } from '../services/auth.service';
 import { AngularFireAuth } from '@angular/fire/auth';
 import { MessageService } from '../services/message.service';
@@ -13,11 +11,8 @@ import { UserInfoService } from '../services/user-info.service';
 import { ChatroomService } from '../services/chatroom.service';
 import { User } from '../models/user.model';
 import { Chat } from '../models/chat.model';
-import { DialogData } from 'src/app/models/createchat.model';
-import { UserInfo } from 'firebase';
-import { Chatuser } from '../models/chatuser.model';
 import { CreateChannelComponent } from '../createchannel/createchannel.component';
-import { MatDialog, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MatDialog } from '@angular/material/dialog';
 import { Subscription } from 'rxjs';
 import {ToneAnalyzerService} from '../services/tone-analyzer.service';
 import { isNull } from 'util';
@@ -234,7 +229,7 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
    * @param toneID the emotion of a message.
    * @returns emoji corresponding to emotion
    */
-  updateEmoji(toneId: string) {
+  updateEmoji(toneId: string): string {
     switch (toneId) {
       case 'anger':
         return '&#128545;';
@@ -248,26 +243,11 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
         return '&#128526;';
       case 'tentative':
         return '&#128533;';
-      case 'empty':
-        return '&#128526;';
       case 'none':
-        return '&#127812;';
+        return '&#128578;';
       case 'analytical':
-          return '&#129488;';
+        return '&#129488;';
     }
-  }
-
-  /**
-   * Upon clicking on a chatroom list, this is called to select a chatroom in the
-   *          conversations array and calls openConversation on that id
-   * @deprecated Currently this is not called
-   * @returns void
-   */
-  selectConversation(id: string, index: number) {
-    const result = this.conversations.filter(
-      conversation => conversation.id === id
-    );
-    this.openConversation(index);
   }
 
   /**
@@ -334,6 +314,7 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
    * scrolls all-the-way down the "scrollMe" element
    *
    * @returns void
+   * @todo unit tests
    */
   scrollBottom() {
     document.getElementById('scrollMe').scrollBy(0, 50000000);
@@ -343,6 +324,7 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
    * Creates a CreateChannelComponent with the parameters
    *          of user id and the chatroom array. Used to Create a new chatroom.
    * @returns void
+   * @todo unit test
    */
   openDialog(): void {
     const dialogRef = this.dialog.open(CreateChannelComponent, {
@@ -420,8 +402,7 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
   /**
    * Updates the component's userListEvents
    *          with the users in the current chatrooms
-   * @todo Unit test
-   *
+   * @returns void
    */
   updateUserList() {
     this.inputtedEmail = '';
@@ -430,16 +411,16 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
     }
     this.userListSubscription = this.userInfoService
       .getUserList()
-      .subscribe((message: any) => {
+      .subscribe((users: any) => {
         this.userListEvents = [];
-        message.forEach((element: any) => {
-          element.chatroomRefs.forEach((chatRef: any) => {
+        users.forEach((userInfo: any) => {
+          userInfo.chatroomRefs.forEach((chatRef: any) => {
             if (chatRef.id === this.selectedChatRoomID) {
               this.userListEvents.push({
-                uid: element.uid,
+                uid: userInfo.uid,
                 type: 'text',
-                displayName: element.displayName,
-                email: element.email
+                displayName: userInfo.displayName,
+                email: userInfo.email
               });
             }
           });

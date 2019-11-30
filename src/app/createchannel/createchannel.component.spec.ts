@@ -7,7 +7,6 @@ import { MaterialModule } from '../modules/material-module';
 import { BrowserModule } from '@angular/platform-browser';
 import { FormsModule } from '@angular/forms';
 import { ChatboxComponent } from '../chatbox/chatbox.component';
-import { ChatService } from '../services/chat.service';
 import { AuthService } from '../services/auth.service';
 import { AngularFireAuth } from '@angular/fire/auth';
 import { AngularFirestore } from '@angular/fire/firestore';
@@ -53,7 +52,7 @@ describe('CreateChannelComponent', () => {
       ],
       declarations: [ CreateChannelComponent, ChatboxComponent ],
       providers: [
-        ChatService, AuthService, AngularFireAuth, AngularFirestore,
+        AuthService, AngularFireAuth, AngularFirestore,
         { provide: MatDialogRef,
           useValue: mockDialogRef },
         { provide: MAT_DIALOG_DATA,

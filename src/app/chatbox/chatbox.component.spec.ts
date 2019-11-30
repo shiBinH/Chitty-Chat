@@ -14,6 +14,8 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { UserInfoService } from '../services/user-info.service';
 import { ChatroomService } from '../services/chatroom.service';
 import { Subscription } from 'rxjs';
+import { ToneAnalyzerService } from '../services/tone-analyzer.service';
+import { MessageService } from '../services/message.service';
 
 describe('ChatboxComponent', () => {
   const INVALID_EMAIL = '  ';
@@ -32,28 +34,64 @@ describe('ChatboxComponent', () => {
   });
   const REJECTED_PROMISE_EMAIL_NOT_FOUND: Promise<any> = Promise.reject();
   const USER_INFO = {
-    uid: 'userID'
+    uid: 'uid',
+    email: 'email',
+    friendList: ['friendID1', 'friendID2'],
+    chatrooms: ['chatroomID1', 'chatroomID2']
   };
   const SELECTED_CHATROOM_ID = 'selectedChatroomID';
+  const INVALID_TONE = 'invalid tone';
+  const SELECTED_CHATROOM_INDEX = 1;
+  const CHAT_HISTORY = [
+    {user: 'sender1', content: 'hey', tone_id: 'angry'},
+    {user: 'sender2', content: 'hey', tone_id: 'angry'}];
+  const EMPTY_CHAT_HISTORY = [];
+  const MESSAGE = 'message content';
+  const EMPTY_MESSAGE = '';
+  const USERS_IN_SELECTED_CHATROOM = [
+    {uid: 'userID1', displayName: 'user1', email: 'email1', chatroomRefs: [{id: SELECTED_CHATROOM_ID}, {id: CHATROOM2_ID}]},
+    {uid: 'userID2', displayName: 'user2', email: 'email2', chatroomRefs: [{id: CHATROOM1_ID}, {id: SELECTED_CHATROOM_ID}]}];
+  const TONE_ANALYZER_SERVICE_RESPONSE = {
+    tones: [{score: 0.4, tone_id: 'sad'}, {score: 0.5, tone_id: 'angry'}]};
+  const TONES_EMOJI_DICT = {
+    anger: '&#128545;',
+    fear: '&#128552;',
+    joy: '&#128516;',
+    sadness: '&#128546;',
+    confident: '&#128526;',
+    tentative: '&#128533;',
+    none: '&#128578;',
+    analytical: '&#129488;'
+  };
 
   let componentUnderTest: ChatboxComponent;
   let fixture: ComponentFixture<ChatboxComponent>;
   let userInfoServiceSpy: jasmine.SpyObj<UserInfoService>;
   let chatroomServiceSpy: jasmine.SpyObj<ChatroomService>;
+  let toneAnalyzerServiceSpy: jasmine.SpyObj<ToneAnalyzerService>;
+  let messageServiceSpy: jasmine.SpyObj<MessageService>;
   let mockSubscription: jasmine.SpyObj<Subscription>;
   let mockObject: jasmine.SpyObj<any>;
+  let mockObservable: jasmine.SpyObj<any>;
 
   userInfoServiceSpy = jasmine.createSpyObj(
     'UserInfoService',
     ['getUserByEmail', 'getUserList']);
   chatroomServiceSpy = jasmine.createSpyObj(
     'ChatroomService',
-    ['addUserToChatroom']);
+    ['addUserToChatroom', 'getUpdates']);
+  toneAnalyzerServiceSpy = jasmine.createSpyObj(
+    'ToneAnalyzerService', ['toneAnalyze']);
+  messageServiceSpy = jasmine.createSpyObj(
+    'MessageService', ['sendMessage']);
   mockSubscription = jasmine.createSpyObj(
     'MockSubscription',
     ['unsubscribe']);
   mockObject = jasmine.createSpyObj(
     'MockObject',
+    ['subscribe']);
+  mockObservable = jasmine.createSpyObj(
+    'MockObservable',
     ['subscribe']);
 
   beforeEach(async(() => {
@@ -72,7 +110,9 @@ describe('ChatboxComponent', () => {
       declarations: [ChatboxComponent],
       providers: [AuthService, AngularFireAuth, AngularFirestore,
         { provide: UserInfoService, useValue: userInfoServiceSpy},
-        { provide: ChatroomService, useValue: chatroomServiceSpy}],
+        { provide: ChatroomService, useValue: chatroomServiceSpy},
+        { provide: ToneAnalyzerService, useValue: toneAnalyzerServiceSpy},
+        { provide: MessageService, useValue: messageServiceSpy}],
     }).compileComponents();
   }));
 
@@ -83,25 +123,17 @@ describe('ChatboxComponent', () => {
     TestBed.get(UserInfoService)
       .getUserList.withArgs(jasmine.any(String))
       .and.returnValue(mockObject);
+    TestBed.get(ChatroomService)
+      .getUpdates.withArgs(jasmine.any(String))
+      .and.returnValue(mockObservable);
 
     fixture = TestBed.createComponent(ChatboxComponent);
     componentUnderTest = fixture.componentInstance;
-    componentUnderTest.userInfo = {
-      uid: 'uid',
-      email: 'email',
-      friendList: ['friendID1', 'friendID2'],
-      chatrooms: ['chatroomID1', 'chatroomID2']
-    };
+    componentUnderTest.userInfo = USER_INFO;
     componentUnderTest.selectedChatRoomID = SELECTED_CHATROOM_ID;
     componentUnderTest.userListSubscription = mockSubscription;
-    fixture.detectChanges();
-  });
 
-  it('should create', () => {
-    TestBed.get(UserInfoService)
-      .getUserByEmail.withArgs(jasmine.any(String))
-      .and.returnValue(RESOLVED_PROMISE_WITH_CHATROOMS);
-    componentUnderTest.ngOnInit();
+    fixture.detectChanges();
   });
 
   it('calling getChatroomList() SHOULD retrieve chatroomList IF user has chatrooms', () => {
@@ -154,6 +186,131 @@ describe('ChatboxComponent', () => {
       expect(chatroomServiceSpy.addUserToChatroom).toHaveBeenCalled();
       expect(componentUnderTest.updateUserList).toHaveBeenCalled();
     });
+  });
+
+  it('calling updateEmoji() SHOULD return emoji IF valid tone', () => {
+    for (const tone of Object.keys(TONES_EMOJI_DICT)) {
+      expect(componentUnderTest.updateEmoji(tone)).toEqual(TONES_EMOJI_DICT[tone]);
+    }
+  });
+
+  it('calling updateEmoji() SHOULD return undefined IF invalid tone', () => {
+    expect(componentUnderTest.updateEmoji(INVALID_TONE)).toBeUndefined();
+  });
+
+  it('calling openConversation() SHOULD update chat history and user list IF index is valid', () => {
+    const chatroomList = [{id: CHATROOM1_ID, name: CHATROOM1_NAME}, {id: CHATROOM2_ID, name: CHATROOM2_NAME}];
+    componentUnderTest.chatroomList = chatroomList;
+    spyOn(componentUnderTest, 'updateChatHistory');
+    spyOn(componentUnderTest, 'updateUserList');
+    TestBed.get(ChatroomService)
+      .getUpdates.withArgs(jasmine.any(String))
+      .and.returnValue(mockObservable);
+
+    componentUnderTest.openConversation(SELECTED_CHATROOM_INDEX);
+
+    expect(componentUnderTest.selectedConversation.name).toEqual(chatroomList[SELECTED_CHATROOM_INDEX].name);
+    expect(componentUnderTest.selectedChatRoomID).toEqual(chatroomList[SELECTED_CHATROOM_INDEX].id);
+    expect(componentUnderTest.updateChatHistory).toHaveBeenCalled();
+    expect(componentUnderTest.updateUserList).toHaveBeenCalled();
+  });
+
+  it('calling updateChatHistory() SHOULD update events IF message history is nonempty', () => {
+    componentUnderTest.chatroomSubscription = mockSubscription;
+    componentUnderTest.selectedChatRoomID = SELECTED_CHATROOM_ID;
+    TestBed.get(ChatroomService)
+      .getUpdates.withArgs(jasmine.any(String))
+      .and.returnValue(mockObservable);
+    mockObservable.subscribe.and.callFake((subscribeCallback) => {
+      subscribeCallback(CHAT_HISTORY);
+    });
+
+    componentUnderTest.updateChatHistory();
+
+    expect(mockSubscription.unsubscribe).toHaveBeenCalled();
+    expect(chatroomServiceSpy.getUpdates).toHaveBeenCalled();
+    expect(mockObservable.subscribe).toHaveBeenCalled();
+    expect(componentUnderTest.events.length).toEqual(CHAT_HISTORY.length);
+  });
+
+  it('calling updateChatHistory() SHOULD return IF message history is empty', () => {
+    componentUnderTest.chatroomSubscription = mockSubscription;
+    componentUnderTest.selectedChatRoomID = SELECTED_CHATROOM_ID;
+    TestBed.get(ChatroomService)
+      .getUpdates.withArgs(jasmine.any(String))
+      .and.returnValue(mockObservable);
+    mockObservable.subscribe.and.callFake((subscribeCallback) => {
+      subscribeCallback(EMPTY_CHAT_HISTORY);
+    });
+
+    componentUnderTest.updateChatHistory();
+
+    expect(mockSubscription.unsubscribe).toHaveBeenCalled();
+    expect(chatroomServiceSpy.getUpdates).toHaveBeenCalled();
+    expect(mockObservable.subscribe).toHaveBeenCalled();
+    expect(componentUnderTest.events.length).toEqual(EMPTY_CHAT_HISTORY.length);
+  });
+
+  it('calling updateUserList() SHOULD update userListEvents IF users are in selected chatroom', () => {
+    componentUnderTest.userListSubscription = mockSubscription;
+    componentUnderTest.selectedChatRoomID = SELECTED_CHATROOM_ID;
+    TestBed.get(UserInfoService)
+      .getUserList
+      .and.returnValue(mockObservable);
+    mockObservable
+      .subscribe
+      .and.callFake((subscribeCallback) => {
+        subscribeCallback(USERS_IN_SELECTED_CHATROOM);
+      });
+
+    componentUnderTest.updateUserList();
+
+    expect(userInfoServiceSpy.getUserList).toHaveBeenCalled();
+    expect(mockObservable.subscribe).toHaveBeenCalled();
+    expect(componentUnderTest.userListEvents.length).toEqual(USERS_IN_SELECTED_CHATROOM.length);
+  });
+
+  it('calling sendMessage() SHOULD call updateToneInFirebase() IF message is nonempty', () => {
+    spyOn(componentUnderTest, 'updateToneInFirebase');
+    componentUnderTest.message = MESSAGE;
+    TestBed.get(ToneAnalyzerService)
+      .toneAnalyze.withArgs(jasmine.any(String))
+      .and.returnValue(mockObservable);
+
+    componentUnderTest.sendMessage(MESSAGE);
+
+    expect(componentUnderTest.updateToneInFirebase).toHaveBeenCalled();
+    expect(componentUnderTest.message.length).toEqual(0);
+  });
+
+  it ('calling sendMessage() SHOULD return IF message is empty', () => {
+    spyOn(componentUnderTest, 'updateToneInFirebase');
+    componentUnderTest.message = EMPTY_MESSAGE;
+    TestBed.get(ToneAnalyzerService)
+      .toneAnalyze.withArgs(jasmine.any(String))
+      .and.returnValue(mockObservable);
+
+    componentUnderTest.sendMessage(MESSAGE);
+
+    expect(componentUnderTest.updateToneInFirebase).not.toHaveBeenCalled();
+  });
+
+  it ('calling updateToneInFirebase() SHOULD call message and tone analyzer service', () => {
+    TestBed.get(ToneAnalyzerService)
+      .toneAnalyze.withArgs(jasmine.any(String))
+      .and.returnValue(mockObservable);
+    mockObservable
+      .subscribe
+      .and.callFake((subscribeCallback) => {
+        subscribeCallback(TONE_ANALYZER_SERVICE_RESPONSE);
+      });
+    componentUnderTest.selectedChatRoomID = SELECTED_CHATROOM_ID;
+
+    componentUnderTest.updateToneInFirebase(MESSAGE);
+
+    expect(toneAnalyzerServiceSpy.toneAnalyze).toHaveBeenCalled();
+    expect(mockObservable.subscribe).toHaveBeenCalled();
+    expect(messageServiceSpy.sendMessage).toHaveBeenCalledWith(USER_INFO.uid, jasmine.any(Date), SELECTED_CHATROOM_ID, MESSAGE, 'angry');
   });
 
   function createChatroomDocumentRef(id: string, roomName: string) {
