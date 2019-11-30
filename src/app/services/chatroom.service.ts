@@ -116,4 +116,54 @@ export class ChatroomService {
     return batch.commit();
   }
 
+  /**
+   * delete a chatroom
+   * @param chatroomID The ID of the chatroom
+   * @returns Promise that resolves if delete doc is successful
+   *          or reject if something goes wrong
+   */
+  public deleteChatroom(chatroomID: string): Promise<any> {
+    const chatroomRef = this.db.doc(`chatrooms/${chatroomID}`).ref;
+    return new Promise((resolve, reject) => {
+      // delele all sub documents inside this chatroom
+      chatroomRef.collection('chats').get()
+      .then(docs => {
+        const batch = this.db.firestore.batch();
+        docs.forEach(doc => {
+          batch.delete(doc.ref);
+        });
+        batch.commit();
+      })
+      // delete chatroom
+      .then(() => chatroomRef.delete())
+      // delete all chatroom refs in users
+      .then(() => this.delChatroomRefInUsers(chatroomRef))
+      .catch(e => reject('failed!'));
+    });
+  }
+
+  /**
+   * delete all chatroom refs in user's chatroomRefs array
+   * @param chatroomRef The ref of the chatroom
+   * @returns Promise that resolves if success
+   *          or reject if something goes wrong
+   */
+  public delChatroomRefInUsers(chatroomRef: any): Promise<any> {
+    return new Promise((resolve, reject) => {
+      // get all user refs that contains this chatroomRef, then remove chatroomRef from chatroomRefs array
+      this.db.collection('users').ref.where('chatroomRefs', 'array-contains', chatroomRef).get()
+        .then(docs => {
+          const batch = this.db.firestore.batch();
+          docs.forEach(doc => {
+            batch.update(doc.ref, {
+              chatroomRefs: firestore.FieldValue.arrayRemove(chatroomRef)
+            });
+          });
+          batch.commit();
+        })
+        .then (() => resolve('success!'))
+        .catch(() => reject('failed!'));
+    });
+  }
+
 }
