@@ -285,24 +285,32 @@ describe('ChatroomService.addUserToChatroom()', () => {
 
 describe('ChatroomService.deleteChatroom()', () => {
   const CHATROOM_ID = 'chatroomID';
+  const MOCK_DOCS = [{ref1: 'ref1'}, {ref2: 'ref2'}];
   const RESOVLED_PROMISE = Promise.resolve();
-  const REJECT_PROMISE = Promise.resolve();
+  const RESOVLED_PROMISE_DATA = Promise.resolve(MOCK_DOCS);
+  const REJECT_PROMISE = Promise.reject();
 
   let serviceUnderTest: ChatroomService;
   let firestoreServiceSpy: jasmine.SpyObj<any>;
+  let batchSpy: jasmine.SpyObj<any>;
   let mockDocumentReference: jasmine.SpyObj<any>;
   let fieldValueSpy: jasmine.SpyObj<any>;
 
   beforeEach(() => {
     mockDocumentReference = jasmine.createSpyObj('MockDocumentReference', ['collection', 'get', 'delete', 'where']);
     mockDocumentReference.collection.withArgs(jasmine.any(String)).and.returnValue(mockDocumentReference);
-    mockDocumentReference.where.withArgs(jasmine.any(String)).and.returnValue(mockDocumentReference);
-    firestoreServiceSpy = jasmine.createSpyObj('FirestoreService', ['doc', 'delete', 'batch', 'ref', 'commit']);
+    mockDocumentReference.where.withArgs(jasmine.any(String), jasmine.any(String),
+                                          jasmine.any(firestore.DocumentReference)).and.returnValue(mockDocumentReference);
+    mockDocumentReference.delete.and.returnValue(RESOVLED_PROMISE);
+    batchSpy = jasmine.createSpyObj('BatchSpy', ['delete', 'batch', 'commit']);
+    batchSpy.batch.and.returnValue(batchSpy);
+    batchSpy.commit.and.returnValue(RESOVLED_PROMISE);
+    firestoreServiceSpy = jasmine.createSpyObj('FirestoreService', ['collection', 'firestore', 'doc', 'ref']);
     firestoreServiceSpy.doc.withArgs(jasmine.any(String)).and.returnValue(firestoreServiceSpy);
+    firestoreServiceSpy.collection.withArgs(jasmine.any(String)).and.returnValue(firestoreServiceSpy);
     firestoreServiceSpy.ref = mockDocumentReference;
-    firestoreServiceSpy.batch.and.returnValue(firestoreServiceSpy);
+    firestoreServiceSpy.firestore = batchSpy;
     fieldValueSpy = jasmine.createSpyObj('firebaseFirestoreFieldValue', ['arrayRemove']);
-    fieldValueSpy.arrayRemove.withArgs(jasmine.anything);
 
     TestBed.configureTestingModule({
       providers: [
@@ -317,18 +325,20 @@ describe('ChatroomService.deleteChatroom()', () => {
   it('calling deleteChatroom() should return IF valid input', () => {
     serviceUnderTest = TestBed.get(ChatroomService);
     spyOn(serviceUnderTest, 'delChatroomRefInUsers');
-    mockDocumentReference.get.and.returnValue(RESOVLED_PROMISE);
+    mockDocumentReference.get.and.returnValue(RESOVLED_PROMISE_DATA);
     serviceUnderTest.deleteChatroom(CHATROOM_ID)
     .then(res => {
       expect(res).toEqual('success!');
 
-      expect(firestoreServiceSpy.batch).toHaveBeenCalledTimes(2);
-      expect(firestoreServiceSpy.delete).toHaveBeenCalled();
-      expect(firestoreServiceSpy.commit).toHaveBeenCalledTimes(2);
+      expect(batchSpy.batch).toHaveBeenCalledTimes(2);
+      expect(batchSpy.delete).toHaveBeenCalled();
+      expect(batchSpy.commit).toHaveBeenCalledTimes(2);
+      expect(batchSpy.update).toHaveBeenCalled();
       expect(firestoreServiceSpy.collection).toHaveBeenCalled();
-      expect(firestoreServiceSpy.update).toHaveBeenCalled();
+      expect(firestoreServiceSpy.doc).toHaveBeenCalled();
       expect(mockDocumentReference.delete).toHaveBeenCalled();
       expect(mockDocumentReference.where).toHaveBeenCalled();
+      expect(mockDocumentReference.collection).toHaveBeenCalled();
       expect(fieldValueSpy.arrayRemove).toHaveBeenCalled();
       expect(serviceUnderTest.delChatroomRefInUsers).toHaveBeenCalled();
     });
@@ -338,6 +348,69 @@ describe('ChatroomService.deleteChatroom()', () => {
     serviceUnderTest = TestBed.get(ChatroomService);
     mockDocumentReference.get.and.returnValue(REJECT_PROMISE);
     serviceUnderTest.deleteChatroom(CHATROOM_ID)
+    .catch(e => {
+      expect(e).toEqual('failed!');
+    });
+  });
+});
+
+
+describe('ChatroomService.delChatroomRefInUsers()', () => {
+  const MOCK_DOCS = [{ref1: 'ref1'}, {ref2: 'ref2'}];
+  const RESOVLED_PROMISE = Promise.resolve();
+  const RESOVLED_PROMISE_DATA = Promise.resolve(MOCK_DOCS);
+  const REJECT_PROMISE = Promise.reject();
+
+  let serviceUnderTest: ChatroomService;
+  let firestoreServiceSpy: jasmine.SpyObj<any>;
+  let batchSpy: jasmine.SpyObj<any>;
+  let mockDocumentReference: jasmine.SpyObj<any>;
+  let fieldValueSpy: jasmine.SpyObj<any>;
+
+  beforeEach(() => {
+    fieldValueSpy = jasmine.createSpyObj('firebaseFirestoreFieldValue', ['arrayRemove']);
+    mockDocumentReference = jasmine.createSpyObj('MockDocumentReference', ['get', 'where']);
+    mockDocumentReference.where.withArgs(jasmine.any(String), jasmine.any(String),
+                                          jasmine.any(firestore.DocumentReference)).and.returnValue(mockDocumentReference);
+    batchSpy = jasmine.createSpyObj('BatchSpy', ['update', 'batch', 'commit']);
+    batchSpy.batch.and.returnValue(batchSpy);
+    batchSpy.commit.and.returnValue(RESOVLED_PROMISE);
+    firestoreServiceSpy = jasmine.createSpyObj('FirestoreService', ['firestore', 'collection', 'doc', 'ref']);
+    firestoreServiceSpy.doc.withArgs(jasmine.any(String)).and.returnValue(firestoreServiceSpy);
+    firestoreServiceSpy.collection.withArgs(jasmine.any(String)).and.returnValue(firestoreServiceSpy);
+    firestoreServiceSpy.ref = mockDocumentReference;
+    firestoreServiceSpy.firestore = batchSpy;
+
+    TestBed.configureTestingModule({
+      providers: [
+        ChatroomService,
+        { provide: AngularFirestore, useValue: firestoreServiceSpy},
+        { provide: firestore.FieldValue, useValue: fieldValueSpy }
+      ]
+    });
+
+  });
+
+  it('calling delChatroomRefInUsers() should return IF valid input', () => {
+    mockDocumentReference.get.and.returnValue(RESOVLED_PROMISE_DATA);
+    serviceUnderTest = TestBed.get(ChatroomService);
+    serviceUnderTest.delChatroomRefInUsers(jasmine.any(firestore.DocumentReference))
+    .then(res => {
+      expect(res).toEqual('success!');
+
+      expect(firestoreServiceSpy.collection).toHaveBeenCalled();
+      expect(mockDocumentReference.get).toHaveBeenCalled();
+      expect(mockDocumentReference.where).toHaveBeenCalled();
+      expect(batchSpy.batch).toHaveBeenCalled();
+      expect(batchSpy.update).toHaveBeenCalled();
+      expect(batchSpy.commit).toHaveBeenCalled();
+    });
+  });
+
+  it('calling delChatroomRefInUsers() should reject IF invalid input', () => {
+    mockDocumentReference.get.and.returnValue(REJECT_PROMISE);
+    serviceUnderTest = TestBed.get(ChatroomService);
+    serviceUnderTest.delChatroomRefInUsers(jasmine.any(firestore.DocumentReference))
     .catch(e => {
       expect(e).toEqual('failed!');
     });

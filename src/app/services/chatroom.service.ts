@@ -132,7 +132,7 @@ export class ChatroomService {
         docs.forEach(doc => {
           batch.delete(doc.ref);
         });
-        batch.commit();
+        return batch.commit();
       })
       // delete chatroom
       .then(() => chatroomRef.delete())
@@ -159,7 +159,7 @@ export class ChatroomService {
               chatroomRefs: firestore.FieldValue.arrayRemove(chatroomRef)
             });
           });
-          batch.commit();
+          return batch.commit();
         })
         .then (() => resolve('success!'))
         .catch(() => reject('failed!'));
