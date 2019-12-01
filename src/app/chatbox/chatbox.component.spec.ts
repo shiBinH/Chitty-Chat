@@ -71,7 +71,6 @@ describe('ChatboxComponent', () => {
   let toneAnalyzerServiceSpy: jasmine.SpyObj<ToneAnalyzerService>;
   let messageServiceSpy: jasmine.SpyObj<MessageService>;
   let mockSubscription: jasmine.SpyObj<Subscription>;
-  let mockObject: jasmine.SpyObj<any>;
   let mockObservable: jasmine.SpyObj<any>;
 
   userInfoServiceSpy = jasmine.createSpyObj(
@@ -87,9 +86,6 @@ describe('ChatboxComponent', () => {
   mockSubscription = jasmine.createSpyObj(
     'MockSubscription',
     ['unsubscribe']);
-  mockObject = jasmine.createSpyObj(
-    'MockObject',
-    ['subscribe']);
   mockObservable = jasmine.createSpyObj(
     'MockObservable',
     ['subscribe']);
@@ -121,11 +117,14 @@ describe('ChatboxComponent', () => {
       .getUserByEmail.withArgs(jasmine.any(String))
       .and.returnValue(RESOLVED_PROMISE_WITH_CHATROOMS);
     TestBed.get(UserInfoService)
-      .getUserList.withArgs(jasmine.any(String))
-      .and.returnValue(mockObject);
+      .getUserList.withArgs()
+      .and.returnValue(mockObservable);
     TestBed.get(ChatroomService)
       .getUpdates.withArgs(jasmine.any(String))
       .and.returnValue(mockObservable);
+    mockObservable
+      .subscribe
+      .and.callFake(() => {});
 
     fixture = TestBed.createComponent(ChatboxComponent);
     componentUnderTest = fixture.componentInstance;
